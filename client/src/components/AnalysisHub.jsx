@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Sparkles, RefreshCw, ChevronDown, Loader2, Play, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { streamAnalysis } from '../services/claude.js';
 
 const TABS = [
   { key: 'trade_signal',    label: 'Trade Signal',   short: 'Signal'   },
@@ -112,51 +113,25 @@ export default function AnalysisHub({ ticker, stockData }) {
 
   const run = async (type = active) => {
     if (streaming) abortRef.current?.abort();
-    setStreaming(true);
-    setResults(p => ({ ...p, [type]: '' }));
-
     const ctrl = new AbortController();
     abortRef.current = ctrl;
 
+    setStreaming(true);
+    setResults(p => ({ ...p, [type]: '' }));
+
     try {
-      const res = await fetch('/api/analysis/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ticker, analysisType: type, extraContext: extraCtx }),
-        signal: ctrl.signal,
-      });
-
-      if (!res.ok) {
-        const e = await res.json();
-        throw new Error(e.error || 'Request failed');
-      }
-
-      const reader  = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        const lines = buf.split('\n');
-        buf = lines.pop() || '';
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const raw = line.slice(6);
-          if (raw === '[DONE]') break;
-          try {
-            const { text, error } = JSON.parse(raw);
-            if (error) throw new Error(error);
-            if (text) setResults(p => ({ ...p, [type]: (p[type] || '') + text }));
-          } catch {}
-        }
-      }
+      await streamAnalysis(
+        type,
+        stockData,
+        extraCtx,
+        (chunk) => setResults(p => ({ ...p, [type]: (p[type] || '') + chunk })),
+        ctrl.signal,
+      );
     } catch (err) {
-      if (err.name !== 'AbortError') {
+      if (err.name !== 'AbortError' && !ctrl.signal.aborted) {
         setResults(p => ({
           ...p,
-          [type]: `**Error:** ${err.message}\n\nMake sure your \`ANTHROPIC_API_KEY\` is set in \`server/.env\`.`,
+          [type]: `**Error:** ${err.message}\n\nMake sure \`VITE_ANTHROPIC_API_KEY\` is set.`,
         }));
       }
     } finally {

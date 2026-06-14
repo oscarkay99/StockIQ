@@ -53,7 +53,7 @@ export default function StockOverview({ ticker, stockData }) {
             Live data unavailable for this ticker. All 10 analysis types still work — Claude uses its knowledge base.
           </p>
           <p className="text-[10px] text-t3 mt-1">
-            Add a free <a href="https://eodhd.com" target="_blank" rel="noreferrer" className="text-info underline hover:text-info/80">EODHD API key</a> to <code className="bg-raised px-1 py-0.5 rounded">server/.env</code> for live prices.
+            Live prices available for major US, UK and global exchange stocks. Ghana GSE, Nigeria NSE prices require a data provider API.
           </p>
         </div>
       </div>

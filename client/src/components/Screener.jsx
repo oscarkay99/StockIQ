@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Search, Loader2, X, Sparkles, Play, RefreshCw } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { streamScreener } from '../services/claude.js';
 
 const MARKETS = [
   { key: 'ALL',        label: 'All Markets', flag: '🌍' },
@@ -51,42 +52,14 @@ export default function Screener({ onSelectStock }) {
     abortRef.current = ctrl;
 
     try {
-      const res = await fetch('/api/screener/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: query.trim(), market, type }),
-        signal: ctrl.signal,
-      });
-
-      if (!res.ok) {
-        const e = await res.json();
-        throw new Error(e.error || 'Screener request failed');
-      }
-
-      const reader  = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        const lines = buf.split('\n');
-        buf = lines.pop() || '';
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const raw = line.slice(6);
-          if (raw === '[DONE]') break;
-          try {
-            const { text, error } = JSON.parse(raw);
-            if (error) throw new Error(error);
-            if (text) setResult(p => p + text);
-          } catch {}
-        }
-      }
+      await streamScreener(
+        { query: query.trim(), market, type },
+        (chunk) => setResult(p => p + chunk),
+        ctrl.signal,
+      );
     } catch (err) {
-      if (err.name !== 'AbortError') {
-        setResult(`**Error:** ${err.message}\n\nMake sure your \`ANTHROPIC_API_KEY\` is set in \`server/.env\`.`);
+      if (err.name !== 'AbortError' && !ctrl.signal.aborted) {
+        setResult(`**Error:** ${err.message}\n\nMake sure \`VITE_ANTHROPIC_API_KEY\` is set.`);
       }
     } finally {
       setStreaming(false);

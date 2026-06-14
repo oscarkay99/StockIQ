@@ -1,26 +1,22 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import { ChevronDown, ChevronRight, Loader2 } from 'lucide-react';
-import STATIC_MARKETS from '../data/markets.json';
+import MARKETS from '../data/markets.json';
+import { getFullStockData } from '../services/stockData.js';
 
 const MARKET_FLAGS = { GSE: '🇬🇭', NYSE_NASDAQ: '🇺🇸', NSE: '🇳🇬', JSE: '🇿🇦' };
 
 export default function Sidebar({ onSelectStock, activeTicker }) {
-  const [markets, setMarkets]   = useState(STATIC_MARKETS);
+  const [markets] = useState(MARKETS);
   const [expanded, setExpanded] = useState({ GSE: true });
   const [loading, setLoading]   = useState({});
-
-  useEffect(() => {
-    axios.get('/api/stocks/markets').then(r => setMarkets(r.data)).catch(() => {});
-  }, []);
 
   const toggle = (key) => setExpanded(p => ({ ...p, [key]: !p[key] }));
 
   const pick = async (stock) => {
     setLoading(p => ({ ...p, [stock.ticker]: true }));
     try {
-      const res = await axios.get(`/api/stocks/quote/${encodeURIComponent(stock.ticker)}`);
-      onSelectStock(stock.ticker, res.data);
+      const data = await getFullStockData(stock.ticker);
+      onSelectStock(stock.ticker, data);
     } catch {
       onSelectStock(stock.ticker, { quote: { symbol: stock.ticker, longName: stock.name, dataSource: 'ai-only' }, summary: null, liveData: false });
     } finally {

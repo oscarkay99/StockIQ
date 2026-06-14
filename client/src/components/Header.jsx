@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
 import { Menu, TrendingUp, Search, Loader2, X, Wifi, ScanSearch } from 'lucide-react';
+import { searchStocks, getFullStockData } from '../services/stockData.js';
 
 export default function Header({ sidebarOpen, onToggleSidebar, onSelectStock, view, onSetView }) {
   const [query, setQuery]       = useState('');
@@ -23,11 +23,11 @@ export default function Header({ sidebarOpen, onToggleSidebar, onSelectStock, vi
     setQuery(val);
     if (debounce.current) clearTimeout(debounce.current);
     if (!val.trim()) { setResults([]); setOpen(false); return; }
-    debounce.current = setTimeout(async () => {
+    debounce.current = setTimeout(() => {
       setLoading(true);
       try {
-        const res = await axios.get(`/api/stocks/search?q=${encodeURIComponent(val.trim())}`);
-        setResults(res.data.slice(0, 8));
+        const matches = searchStocks(val.trim());
+        setResults(matches);
         setOpen(true);
       } catch { setResults([]); }
       finally { setLoading(false); }
@@ -37,10 +37,10 @@ export default function Header({ sidebarOpen, onToggleSidebar, onSelectStock, vi
   const loadStock = async (ticker) => {
     setOpen(false); setQuery(ticker); setFetching(true);
     try {
-      const res = await axios.get(`/api/stocks/quote/${encodeURIComponent(ticker)}`);
-      onSelectStock(ticker, res.data);
+      const data = await getFullStockData(ticker);
+      onSelectStock(ticker, data);
     } catch (err) {
-      alert(`Could not load "${ticker}": ${err.response?.data?.error || err.message}`);
+      alert(`Could not load "${ticker}": ${err.message}`);
     } finally { setFetching(false); }
   };
 
