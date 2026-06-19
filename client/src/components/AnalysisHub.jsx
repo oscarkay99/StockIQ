@@ -33,10 +33,30 @@ function parseSignalBlock(text) {
   return sig.VERDICT ? sig : null;
 }
 
+function PillarBar({ label, score }) {
+  const s = parseInt(score) || 0;
+  const color = s >= 7 ? 'bg-gain' : s >= 5 ? 'bg-gold' : 'bg-loss';
+  const textColor = s >= 7 ? 'text-gain' : s >= 5 ? 'text-gold' : 'text-loss';
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center justify-between">
+        <span className="text-[9px] text-t3 uppercase tracking-wider">{label}</span>
+        <span className={`text-[11px] font-bold font-mono ${textColor}`}>{s}/10</span>
+      </div>
+      <div className="h-1.5 bg-surface rounded-full overflow-hidden">
+        <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${s * 10}%` }} />
+      </div>
+    </div>
+  );
+}
+
 function SignalCard({ sig, streaming }) {
   const verdict = sig.VERDICT || 'HOLD';
   const conf    = sig.CONFIDENCE || 'MEDIUM';
   const cur     = sig.CURRENCY || '';
+  const score   = parseInt(sig.SIGNAL_SCORE) || 0;
+  const rr      = parseFloat(sig.RISK_REWARD) || 0;
+  const horizon = sig.TIME_HORIZON || '';
 
   const isB = verdict === 'BUY';
   const isS = verdict === 'SELL';
@@ -44,10 +64,13 @@ function SignalCard({ sig, streaming }) {
   const verdictColor = isB ? 'text-gain' : isS ? 'text-loss' : 'text-gold';
   const verdictBg    = isB ? 'bg-gain/10 border-gain/30' : isS ? 'bg-loss/10 border-loss/30' : 'bg-gold/10 border-gold/30';
   const confColor    = conf === 'HIGH' ? 'badge-green' : conf === 'LOW' ? 'badge-red' : 'badge-gold';
+  const scoreColor   = score >= 72 ? 'text-gain' : score >= 50 ? 'text-gold' : 'text-loss';
+  const scoreBarColor = score >= 72 ? 'bg-gain' : score >= 50 ? 'bg-gold' : 'bg-loss';
+  const rrColor      = rr >= 2.5 ? 'text-gain' : rr >= 1.5 ? 'text-gold' : 'text-loss';
   const Icon = isB ? TrendingUp : isS ? TrendingDown : Minus;
 
   const fmt = (v) => (v && v !== '0.00' && v !== '0.0' && v !== '0') ? `${cur} ${parseFloat(v).toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
-  const upPct = sig.UPSIDE_PCT && sig.UPSIDE_PCT !== '0.0' && sig.UPSIDE_PCT !== '0' ? `${sig.UPSIDE_PCT > 0 ? '+' : ''}${sig.UPSIDE_PCT}%` : null;
+  const upPct = sig.UPSIDE_PCT && sig.UPSIDE_PCT !== '0.0' && sig.UPSIDE_PCT !== '0' ? `${parseFloat(sig.UPSIDE_PCT) > 0 ? '+' : ''}${sig.UPSIDE_PCT}%` : null;
 
   return (
     <div className={`mx-5 mt-5 mb-1 rounded-xl border p-4 ${verdictBg}`}>
@@ -62,8 +85,11 @@ function SignalCard({ sig, streaming }) {
             <div className="text-[11px] text-t3 mt-0.5">AI Trade Signal</div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className={`badge ${confColor} text-[11px] font-semibold`}>{conf} confidence</span>
+          {horizon && (
+            <span className="badge badge-gold text-[11px] font-semibold">{horizon}</span>
+          )}
           {upPct && (
             <span className={`badge font-mono text-[11px] ${parseFloat(sig.UPSIDE_PCT) >= 0 ? 'badge-green' : 'badge-red'}`}>
               {upPct} (12M)
@@ -72,6 +98,30 @@ function SignalCard({ sig, streaming }) {
           {streaming && <Loader2 size={12} className="text-t3 animate-spin-sm" />}
         </div>
       </div>
+
+      {/* Signal score bar */}
+      {score > 0 && (
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[10px] text-t3 uppercase tracking-wider">Signal Score</span>
+            <div className="flex items-center gap-2">
+              {rr > 0 && (
+                <span className={`text-[10px] font-mono font-semibold ${rrColor}`}>R:R {rr.toFixed(1)}:1</span>
+              )}
+              <span className={`text-sm font-black font-mono ${scoreColor}`}>{score}<span className="text-[10px] font-normal text-t3">/100</span></span>
+            </div>
+          </div>
+          <div className="h-2 bg-surface rounded-full overflow-hidden mb-3">
+            <div className={`h-full rounded-full transition-all duration-700 ${scoreBarColor}`} style={{ width: `${score}%` }} />
+          </div>
+          {/* Pillar scores */}
+          <div className="grid grid-cols-3 gap-3">
+            <PillarBar label="Technical" score={sig.TECH_SCORE} />
+            <PillarBar label="Fundamental" score={sig.FUND_SCORE} />
+            <PillarBar label="Momentum" score={sig.MOM_SCORE} />
+          </div>
+        </div>
+      )}
 
       {/* Price levels grid */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">

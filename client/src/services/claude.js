@@ -258,41 +258,95 @@ Output format:
 **Hedge:** [What to own alongside this to protect against the main risk]`,
   },
   trade_signal: {
-    buildPrompt: (ctx) => `You are a professional trading analyst. Generate a trade signal for the following stock.
+    buildPrompt: (ctx) => `You are a quantitative trading analyst. Score this stock across three pillars and produce a precise trade signal.
 
 ${ctx}
 
-IMPORTANT: Your response MUST begin with this exact block (fill in real numbers):
+---
+SCORING FRAMEWORK
+
+Score each pillar 1–10 using only the data provided above:
+
+TECHNICAL (40% weight)
+- Trend: where is current price in 52-week range? (>70% = bullish, 30–70% = neutral, <30% = bearish)
+- Momentum: day change direction and magnitude
+- Volume: above/below average (estimate if not given)
+- Key levels: distance to 52W high (resistance) and 52W low (support)
+
+FUNDAMENTAL (40% weight)
+- Valuation: P/E vs sector norm (low P/E = more points)
+- Quality: ROE, profit margin, operating margin
+- Analyst consensus: rating and gap between target and current price
+- Dividend yield (bonus points if >3%)
+
+MOMENTUM (20% weight)
+- Recent price trend (positive/negative change %)
+- Analyst target upside (if available)
+- Sector momentum and macro tailwinds
+
+COMPOSITE SCORE = (TECH × 0.40 + FUND × 0.40 + MOM × 0.20) × 10  → round to integer (0–100)
+
+VERDICT RULES (based on composite score):
+- Score ≥ 72 → BUY
+- Score 50–71 → HOLD
+- Score < 50 → SELL
+
+CONFIDENCE RULES:
+- HIGH: composite score ≥ 75 or ≤ 30 (strong signal, multiple factors agree)
+- LOW: mixed signals or very limited data
+- MEDIUM: everything else
+
+RISK/REWARD: (TARGET_12M − ENTRY_MID) / (ENTRY_MID − STOP_LOSS)  → round to 1 decimal
+TIME_HORIZON: SHORT (1–4 weeks) if momentum-driven | MEDIUM (1–3 months) if technical | LONG (6–12 months) if fundamental
+
+---
+IMPORTANT: Begin your response with EXACTLY this block (no extra text before it):
 
 ===SIGNAL===
 VERDICT: BUY
 CONFIDENCE: HIGH
+TECH_SCORE: 0
+FUND_SCORE: 0
+MOM_SCORE: 0
+SIGNAL_SCORE: 0
 ENTRY_LOW: 0.00
 ENTRY_HIGH: 0.00
 TARGET_1M: 0.00
 TARGET_3M: 0.00
 TARGET_12M: 0.00
 STOP_LOSS: 0.00
+RISK_REWARD: 0.0
 CURRENCY: USD
 UPSIDE_PCT: 0.0
+TIME_HORIZON: MEDIUM
 ===END===
 
 Rules:
-- VERDICT must be exactly: BUY, SELL, or HOLD
-- CONFIDENCE must be exactly: HIGH, MEDIUM, or LOW
-- All prices must be numbers (no currency symbols)
-- For AI-mode stocks without live price, use your best estimate from training knowledge
+- VERDICT: BUY, SELL, or HOLD (use the scoring framework above — do NOT override with gut feel)
+- CONFIDENCE: HIGH, MEDIUM, or LOW
+- TECH_SCORE / FUND_SCORE / MOM_SCORE: integers 1–10
+- SIGNAL_SCORE: integer 0–100 (composite from formula above)
+- RISK_REWARD: decimal e.g. 2.5 (reward-to-risk ratio)
+- TIME_HORIZON: SHORT | MEDIUM | LONG
+- All prices: plain numbers, no currency symbols
 - CURRENCY: GHS for Ghana, NGN for Nigeria, ZAR for South Africa, USD for US
-- UPSIDE_PCT = expected % gain/loss to 12-month target from entry midpoint
+- UPSIDE_PCT: % gain/loss from entry midpoint to 12M target
+- If live price data is missing, use best estimate from training knowledge and note it
 
-After the signal block, be brief — max 150 words:
+After the signal block, max 180 words:
 
-**Why [BUY/SELL/HOLD]:** [2 sentences — the core thesis]
+**Thesis:** [2 sentences — the single most important reason for this verdict]
 
-**Bull:** [2 bullet points]
-**Bear:** [2 bullet points]
+**Bulls say:**
+- [strongest technical or fundamental supporting factor]
+- [key catalyst or value argument]
 
-**Timing:** [When to enter — 1 sentence]`,
+**Bears say:**
+- [biggest risk to the thesis]
+- [what could go wrong]
+
+**Entry trigger:** [exact price level or event that confirms the entry]
+**Cut position if:** [specific condition that invalidates the thesis]`,
   },
   dividend_analysis: {
     buildPrompt: (ctx) => `${DIRECT}You are a dividend investing specialist. Give me a direct dividend verdict on this stock.
