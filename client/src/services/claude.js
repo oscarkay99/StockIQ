@@ -16,27 +16,28 @@ function buildStockContext(stockData, extraContext = '') {
   if (!q) return 'No stock data available.';
 
   const hasLive = liveData && q.regularMarketPrice != null;
-  const hasFund = q.marketCap != null || q.trailingPE != null;
+  const hasFund = q.marketCap != null || q.trailingPE != null || q.trailingEps != null;
+  const cur = q.currency || 'USD';
 
   const priceSection = hasLive ? `
-LIVE PRICE DATA:
-- Current Price: ${fmt(q.regularMarketPrice, q.currency ? q.currency + ' ' : '')}
-- Day Change: ${q.regularMarketChange != null ? `${q.regularMarketChange >= 0 ? '+' : ''}${fmt(q.regularMarketChange)} (${fmt(q.regularMarketChangePercent, '', '%')})` : 'N/A'}
+LIVE PRICE DATA (source: ${q.dataSource || 'live'}):
+- Current Price: ${fmt(q.regularMarketPrice, cur + ' ')}
+- Day Change: ${q.regularMarketChange != null ? `${q.regularMarketChange >= 0 ? '+' : ''}${fmt(q.regularMarketChange)} (${q.regularMarketChangePercent != null ? (q.regularMarketChangePercent * 100).toFixed(2) + '%' : 'N/A'})` : 'N/A'}
 - Day High / Low: ${fmt(q.regularMarketDayHigh)} / ${fmt(q.regularMarketDayLow)}
 - Volume: ${fmt(q.regularMarketVolume)}
 - 52-Week High: ${fmt(q.fiftyTwoWeekHigh)}  |  52-Week Low: ${fmt(q.fiftyTwoWeekLow)}
-- Previous Close: ${fmt(q.chartPreviousClose)}` : `
+- Previous Close: ${fmt(q.chartPreviousClose, cur + ' ')}` : `
 NOTE: Live price data is not available for this ticker via the current data provider.`;
 
   const fundSection = hasFund ? `
 FUNDAMENTAL DATA:
-- Market Cap: ${fmt(q.marketCap, '$')}
+- Market Cap: ${fmt(q.marketCap, cur + ' ')}
 - P/E Ratio (TTM): ${fmt(q.trailingPE)}
 - Forward P/E: ${fmt(q.forwardPE)}
-- EPS (TTM): ${fmt(q.trailingEps)}
+- EPS (TTM): ${fmt(q.trailingEps, cur + ' ')}
 - Dividend Yield: ${q.dividendYield != null ? (q.dividendYield * 100).toFixed(2) + '%' : 'N/A'}
 - Beta: ${fmt(q.beta)}
-- Revenue (TTM): ${fmt(q.revenueTotal, '$')}
+- Revenue (TTM): ${fmt(q.revenueTotal, cur + ' ')}
 - Profit Margin: ${q.profitMargin != null ? (q.profitMargin * 100).toFixed(2) + '%' : 'N/A'}
 - Operating Margin: ${q.operatingMargin != null ? (q.operatingMargin * 100).toFixed(2) + '%' : 'N/A'}
 - Return on Equity: ${q.returnOnEquity != null ? (q.returnOnEquity * 100).toFixed(2) + '%' : 'N/A'}
@@ -384,6 +385,78 @@ export async function streamAnalysis(analysisType, stockData, extraContext, onCh
   const stream = getClient().messages.stream({
     model: 'claude-sonnet-4-6',
     max_tokens: 900,
+    messages: [{ role: 'user', content: prompt }],
+  });
+
+  if (signal) signal.addEventListener('abort', () => stream.abort());
+
+  for await (const chunk of stream) {
+    if (signal?.aborted) break;
+    if (chunk.type === 'content_block_delta' && chunk.delta?.type === 'text_delta') {
+      onChunk(chunk.delta.text);
+    }
+  }
+}
+
+export async function streamSignalScan({ market }, onChunk, signal) {
+  const entries = [];
+  for (const [key, mkt] of Object.entries(MARKETS)) {
+    if (market && market !== 'ALL' && key !== market) continue;
+    for (const s of mkt.stocks) {
+      entries.push(`${s.ticker} | ${s.name} | ${s.sector} | ${mkt.currency}`);
+    }
+  }
+  const stockList = entries.join('\n');
+  const marketLabel = market === 'ALL' ? 'all markets (Ghana GSE, US, Nigeria, South Africa)' : market;
+
+  const prompt = `You are a quantitative equity analyst. Rate every stock in the list below using your training knowledge. Be direct — no intros.
+
+MARKET: ${marketLabel}
+
+STOCKS TO RATE (ticker | name | sector | currency):
+${stockList}
+
+RATING CRITERIA:
+- STRONG BUY: Compelling value, strong fundamentals, positive momentum — high conviction
+- BUY: Good fundamentals, reasonable valuation, moderate upside
+- HOLD: Fair value or mixed signals — no urgent action needed
+- IGNORE: Overvalued, weak fundamentals, high risk, or insufficient data to rate with confidence
+
+OUTPUT FORMAT — use exactly these four sections, include every stock in exactly one section:
+
+## 🟢 Strong Buy
+| Ticker | Name | Reason (10 words max) |
+|--------|------|----------------------|
+| TICKER | Name | reason |
+
+## 🔵 Buy
+| Ticker | Name | Reason (10 words max) |
+|--------|------|----------------------|
+| TICKER | Name | reason |
+
+## 🟡 Hold
+| Ticker | Name | Reason (10 words max) |
+|--------|------|----------------------|
+| TICKER | Name | reason |
+
+## 🔴 Ignore
+| Ticker | Name | Reason (10 words max) |
+|--------|------|----------------------|
+| TICKER | Name | reason |
+
+---
+**Top pick:** [Name (TICKER)] — [1 sentence why it stands out above all others]
+
+Rules:
+- Every stock must appear in exactly one section
+- Use sector knowledge and company fundamentals from your training data
+- For African markets (GSE, NSE), weight liquidity and dividend history more heavily
+- Be decisive — if in doubt between HOLD and IGNORE, use HOLD
+- No padding, no explanations beyond the table and top pick`;
+
+  const stream = getClient().messages.stream({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 2000,
     messages: [{ role: 'user', content: prompt }],
   });
 
