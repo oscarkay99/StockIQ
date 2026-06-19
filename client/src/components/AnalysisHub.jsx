@@ -50,7 +50,7 @@ function PillarBar({ label, score }) {
   );
 }
 
-function SignalCard({ sig, streaming }) {
+function SignalCard({ sig, streaming, isAiOnly }) {
   const verdict = sig.VERDICT || 'HOLD';
   const conf    = sig.CONFIDENCE || 'MEDIUM';
   const cur     = sig.CURRENCY || '';
@@ -93,6 +93,11 @@ function SignalCard({ sig, streaming }) {
           {upPct && (
             <span className={`badge font-mono text-[11px] ${parseFloat(sig.UPSIDE_PCT) >= 0 ? 'badge-green' : 'badge-red'}`}>
               {upPct} (12M)
+            </span>
+          )}
+          {isAiOnly && (
+            <span className="badge text-[10px] font-semibold" style={{ background: 'rgba(99,102,241,0.15)', color: '#818cf8', border: '1px solid rgba(99,102,241,0.3)' }}>
+              AI Est. prices
             </span>
           )}
           {streaming && <Loader2 size={12} className="text-t3 animate-spin-sm" />}
@@ -324,7 +329,7 @@ export default function AnalysisHub({ ticker, stockData }) {
 
         {/* Signal card (trade_signal tab) */}
         {isSignalTab && (signalData || (streaming && hasContent)) && (
-          <SignalCard sig={signalData || {}} streaming={streaming} />
+          <SignalCard sig={signalData || {}} streaming={streaming} isAiOnly={!stockData?.liveData} />
         )}
 
         {/* Analysis markdown body */}

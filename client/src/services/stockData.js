@@ -13,11 +13,27 @@ function setCache(key, data) {
 }
 
 function aiOnlyStub(ticker) {
+  // Enrich stub with static data from markets.json so Claude has context even without live prices
+  let longName = ticker, sector = null, currency = null, exchange = null;
+  for (const [, mkt] of Object.entries(MARKETS)) {
+    const found = mkt.stocks.find(s => s.ticker === ticker);
+    if (found) {
+      longName = found.name;
+      sector   = found.sector;
+      currency = mkt.currency;
+      exchange = mkt.name;
+      break;
+    }
+  }
   return {
     quote: {
       symbol: ticker,
-      longName: ticker,
-      shortName: ticker,
+      longName,
+      shortName: longName,
+      sector,
+      currency,
+      exchange,
+      fullExchangeName: exchange,
       dataSource: 'ai-only',
     },
     summary: null,

@@ -331,7 +331,7 @@ Rules:
 - All prices: plain numbers, no currency symbols
 - CURRENCY: GHS for Ghana, NGN for Nigeria, ZAR for South Africa, USD for US
 - UPSIDE_PCT: % gain/loss from entry midpoint to 12M target
-- If live price data is missing, use best estimate from training knowledge and note it
+- NEVER output 0.00 for price fields. If live data is missing, you MUST estimate from your training knowledge using the company name, sector, exchange, and currency provided. Use realistic price ranges for the market (e.g. GHS 0.10–50 for small GSE stocks, NGN 1–500 for NSE). If genuinely unknown, use a conservative sector-average estimate and flag it in your thesis.
 
 After the signal block, max 180 words:
 
