@@ -257,5 +257,58 @@
     ],
     "pageUrl": "https://gse.com.gh/financial-statement/pr-392-2022-mmh-consolidated-reports-and-financial-statements-for-the-year-ended-july-31-2022/",
     "fiscalYear": 2022
+  },
+  "ASG.GH": {
+    "pdfUrl": "https://gse.com.gh/wp-content/uploads/2026/04/PR-116-ASANTE-GOLD-CORPORATION-CONSOLIDATED-FINANCIAL-STATEMENTS-FOR-THE-ELEVEN-MONTHS-ENDED-DECEMBER-31-2025-AND-THE-YEAR-ENDED-JANUARY-31-2025-1.pdf",
+    "pdfUrls": [
+      "https://gse.com.gh/wp-content/uploads/2026/04/PR-116-ASANTE-GOLD-CORPORATION-CONSOLIDATED-FINANCIAL-STATEMENTS-FOR-THE-ELEVEN-MONTHS-ENDED-DECEMBER-31-2025-AND-THE-YEAR-ENDED-JANUARY-31-2025-1.pdf",
+      "https://gse.com.gh/wp-content/uploads/2026/04/PR-116-ASANTE-GOLD-CORPORATION-CONSOLIDATED-FINANCIAL-STATEMENTS-FOR-THE-ELEVEN-MONTHS-ENDED-DECEMBER-31-2025-AND-THE-YEAR-ENDED-JANUARY-31-2025-2.pdf"
+    ],
+    "pageUrl": "https://gse.com.gh/financial-statement/pr-116-asante-gold-corporation-consolidated-financial-statements-for-the-eleven-months-ended-december-31-2025-and-the-year-ended-january-31-2025/",
+    "fiscalYear": 2025
+  },
+  "ALLGH.GH": {
+    "pdfUrl": "https://gse.com.gh/wp-content/uploads/2025/09/PR-358-ATLANTIC-LITHIUM-2025-FINANCIAL-REPORT-1.pdf",
+    "pdfUrls": [
+      "https://gse.com.gh/wp-content/uploads/2025/09/PR-358-ATLANTIC-LITHIUM-2025-FINANCIAL-REPORT-1.pdf",
+      "https://gse.com.gh/wp-content/uploads/2025/09/PR-358-ATLANTIC-LITHIUM-2025-FINANCIAL-REPORT-2.pdf"
+    ],
+    "pageUrl": "https://gse.com.gh/pressrelease/pr-358-atlantic-lithium-2025-financial-report/",
+    "fiscalYear": 2025
+  },
+  "CPC.GH": {
+    "pdfUrl": "https://gse.com.gh/wp-content/uploads/2025/03/PR-316-COCOA-PROCESSING-ANNUAL-REPORTS-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-SEPTEMBER-30-2022-1.pdf",
+    "pdfUrls": [
+      "https://gse.com.gh/wp-content/uploads/2025/03/PR-316-COCOA-PROCESSING-ANNUAL-REPORTS-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-SEPTEMBER-30-2022-1.pdf",
+      "https://gse.com.gh/wp-content/uploads/2025/03/PR-316-COCOA-PROCESSING-ANNUAL-REPORTS-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-SEPTEMBER-30-2022-2.pdf"
+    ],
+    "pageUrl": "https://gse.com.gh/financial-statement/pr-316-cocoa-processing-annual-reports-and-financial-statements-for-the-year-ended-september-30-2022/",
+    "fiscalYear": 2022
+  },
+  "MAC.GH": {
+    "pdfUrl": "https://gse.com.gh/wp-content/uploads/2020/05/PR_235_MAC_Audited_Financial_Statement_for_year_Ended_31_December_2019..pdf",
+    "pdfUrls": [
+      "https://gse.com.gh/wp-content/uploads/2020/05/PR_235_MAC_Audited_Financial_Statement_for_year_Ended_31_December_2019..pdf"
+    ],
+    "pageUrl": "https://gse.com.gh/financial-statement/pr-235-2020-mac-audited-financial-statements-for-the-year-ended-31-december-2019/",
+    "fiscalYear": 2019
+  },
+  "SCBPREF.GH": {
+    "pdfUrl": "https://gse.com.gh/wp-content/uploads/2026/03/PR-0752-1.pdf",
+    "pdfUrls": [
+      "https://gse.com.gh/wp-content/uploads/2026/03/PR-0752-1.pdf",
+      "https://gse.com.gh/wp-content/uploads/2026/03/PR-0751-1.pdf"
+    ],
+    "pageUrl": "https://gse.com.gh/financial-statement/standard-chartered-bank-ghana-plc-scb-summary-consolidated-and-separate-financial-statements-prepared-from-the-audited-financial-statements-for-the-year-ended-31-december-2025/",
+    "fiscalYear": 2025
+  },
+  "AADS.GH": {
+    "pdfUrl": "https://gse.com.gh/wp-content/uploads/2025/03/PR-089-ANGLOGOLD-ASHANTI-PLC-ANGLOGOLD-ASHANTI-PUBLISHES-ITS-2024-UK-ANNUAL-REPORT-AND-OTHER-ANNUAL-REPORTS-1-1.pdf",
+    "pdfUrls": [
+      "https://gse.com.gh/wp-content/uploads/2025/03/PR-089-ANGLOGOLD-ASHANTI-PLC-ANGLOGOLD-ASHANTI-PUBLISHES-ITS-2024-UK-ANNUAL-REPORT-AND-OTHER-ANNUAL-REPORTS-1-1.pdf",
+      "https://gse.com.gh/wp-content/uploads/2025/03/PR-089-ANGLOGOLD-ASHANTI-PLC-ANGLOGOLD-ASHANTI-PUBLISHES-ITS-2024-UK-ANNUAL-REPORT-AND-OTHER-ANNUAL-REPORTS-2-1.pdf"
+    ],
+    "pageUrl": "https://gse.com.gh/financial-statement/pr-089-anglogold-ashanti-plc-anglogold-ashanti-publishes-its-2024-uk-annual-report-and-other-annual-reports/",
+    "fiscalYear": 2024
   }
 }

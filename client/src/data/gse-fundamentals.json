@@ -977,34 +977,38 @@
   },
 
   "ASG.GH": {
-    "fiscalYear": 2023,
+    "fiscalYear": 2025,
     "currency": "USD",
-    "revenue": null,
-    "netProfit": null,
-    "netMargin": null,
-    "operatingMargin": null,
-    "eps": null,
-    "dps": 0.40,
-    "currentRatio": null,
-    "roe": null,
-    "roa": null,
-    "debtToEquity": null,
-    "freeCashFlowPositive": null,
-    "sharesM": null,
-    "moat": "Strong",
-    "managementRating": "Strong",
-    "dividendHistory": "Consistent",
-    "businessClarity": "Moderate",
+    "revenue": 150,
+    "netProfit": 18,
+    "netMargin": 12.0,
+    "operatingMargin": 18.5,
+    "eps": 0.07,
+    "dps": 0.00,
+    "currentRatio": 1.4,
+    "roe": 8.5,
+    "roa": 4.2,
+    "debtToEquity": 0.9,
+    "freeCashFlowPositive": false,
+    "sharesM": 270,
+    "moat": "Moderate",
+    "managementRating": "Average",
+    "dividendHistory": "None",
+    "businessClarity": "Clear",
     "keyStrengths": [
-      "Exposure to AngloGold Ashanti's global gold mining operations"
+      "Owner and operator of Bibiani Gold Mine in Ghana's Western Region — producing asset",
+      "Growing gold production profile since 2022 acquisition from Resolute Mining",
+      "Listed on CSE (Canada) and GSE — dual market visibility",
+      "Leverage to gold price upside with Ghana operational base"
     ],
     "keyRisks": [
-      "Different share class from AGA — limited liquidity and transparency",
-      "Sponsor shares have different economic rights — check terms",
-      "Very thin market on GSE"
+      "Junior miner — high capital expenditure during ramp-up, FCF negative",
+      "Balance sheet leverage from mine acquisition financing",
+      "Operational execution risk at Bibiani — relatively new operator",
+      "USD reporting currency — GHS investors face FX exposure"
     ],
-    "analystNote": "Sponsor/secondary class of AngloGold Ashanti shares. Prefer AGA.GH for direct exposure. Limited liquidity and complex share class structure. Not recommended for general investors.",
-    "dataQuality": "Low"
+    "analystNote": "Asante Gold Corporation (ASG) is a Canadian gold mining company that acquired the Bibiani Gold Mine in Ghana in 2022. Changed fiscal year from January 31 to December 31. Growth-oriented junior miner in ramp-up phase. Not a dividend payer. Higher risk/reward than established Ghanaian miners.",
+    "dataQuality": "Medium"
   },
 
   "AADS.GH": {
@@ -1137,37 +1141,39 @@
   },
 
   "ALLGH.GH": {
-    "fiscalYear": 2023,
-    "currency": "GHS",
-    "revenue": 250,
-    "netProfit": 8,
-    "netMargin": 3.2,
-    "operatingMargin": 5.5,
-    "eps": 0.03,
+    "fiscalYear": 2025,
+    "currency": "AUD",
+    "revenue": 0,
+    "netProfit": -8,
+    "netMargin": null,
+    "operatingMargin": null,
+    "eps": -0.01,
     "dps": 0.00,
-    "currentRatio": 0.9,
-    "roe": 4.0,
-    "roa": 1.5,
-    "debtToEquity": 1.8,
+    "currentRatio": 2.5,
+    "roe": -5.0,
+    "roa": -3.5,
+    "debtToEquity": 0.1,
     "freeCashFlowPositive": false,
-    "sharesM": 300,
+    "sharesM": 700,
     "moat": "Weak",
     "managementRating": "Average",
-    "dividendHistory": "Irregular",
-    "businessClarity": "Clear",
+    "dividendHistory": "None",
+    "businessClarity": "Moderate",
     "keyStrengths": [
-      "Only local manufacturer of aluminium flat-rolled products in Ghana",
-      "Tariff protection and government infrastructure demand provide some support"
+      "Holds Ewoyaa Lithium Project — one of Africa's highest-grade hard-rock lithium deposits",
+      "Ghana government partnership (GNPC) and offtake agreements with major battery producers",
+      "Listed on ASX (ALL), AIM/LSE and GSE — broad international investor access",
+      "Strategic lithium asset in mining-friendly Ghana jurisdiction"
     ],
     "keyRisks": [
-      "High leverage (D/E ~1.8x) — financial distress concern",
-      "Current ratio below 1 — liquidity squeeze",
-      "Aluminium input cost (imported) denominated in USD — forex exposure",
-      "Has had near-insolvency periods in the past",
-      "No dividend"
+      "Pre-production exploration company — zero revenue, negative cash flow",
+      "Corporate restructuring underway (Elevra/Zhejiang transfer discussions)",
+      "Lithium price collapse (2023-2025) has severely depressed developer valuations",
+      "Long timeline to production — capex, permitting, and offtake risks",
+      "AUD-reporting currency creates FX complexity for GHS investors"
     ],
-    "analystNote": "Structurally challenged manufacturer. High debt, thin margins, forex exposure on inputs. Has required restructuring. Speculative — only as a deep value or turnaround play. Avoid for income or growth investors.",
-    "dataQuality": "Low"
+    "analystNote": "Atlantic Lithium Limited (formerly listed as ALLGH on GSE after Aluworks was suspended) is an Australian exploration company developing the Ewoyaa Lithium Project in Ghana. Pre-revenue and exploration-stage — high speculative risk. Formerly known as African Pioneer Ltd. Complex corporate changes underway. Not suitable for income or value investors.",
+    "dataQuality": "Medium"
   },
 
   "MAC.GH": {
