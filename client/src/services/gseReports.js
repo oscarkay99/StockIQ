@@ -1,7 +1,8 @@
+import REPORT_URLS from '../data/gse-report-urls.json';
+
 const PROXY = 'https://corsproxy.io/?url=';
 const WP_POSTS = 'https://gse.com.gh/wp-json/wp/v2/posts';
 
-// Convert ArrayBuffer to base64 in chunks to handle large PDFs efficiently
 function arrayBufferToBase64(buffer) {
   const bytes = new Uint8Array(buffer);
   const chunkSize = 8192;
@@ -12,17 +13,34 @@ function arrayBufferToBase64(buffer) {
   return btoa(binary);
 }
 
-// Search gse.com.gh WP REST API for a financial statement post for this ticker,
-// extract PDF URL (fixing missing https:// prefix), fetch and return as base64.
-// Returns null if nothing is found or fetch fails.
-export async function fetchGseReportPdf(ticker) {
-  const symbol = ticker.replace(/\.GH$/i, '').toUpperCase();
+async function fetchPdfAsBase64(pdfUrl) {
+  const res = await fetch(PROXY + encodeURIComponent(pdfUrl));
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const buffer = await res.arrayBuffer();
+  return arrayBufferToBase64(buffer);
+}
 
-  const terms = [
-    `${symbol} annual`,
-    `${symbol} audited`,
-    `${symbol} financial`,
-  ];
+// Primary: use our pre-built static map of PDF URLs scraped from gse.com.gh sitemap.
+// Fallback: search the WP REST API (covers any new filings added after the map was built).
+export async function fetchGseReportPdf(ticker) {
+  const entry = REPORT_URLS[ticker];
+
+  // ── Static map lookup ─────────────────────────────────────────────────────
+  if (entry?.pdfUrl) {
+    try {
+      const base64 = await fetchPdfAsBase64(entry.pdfUrl);
+      return {
+        base64,
+        title: `${ticker} Annual Report FY${entry.fiscalYear}`,
+        url: entry.pdfUrl,
+        fiscalYear: entry.fiscalYear,
+      };
+    } catch { /* fall through to REST API */ }
+  }
+
+  // ── Fallback: WP REST API search ──────────────────────────────────────────
+  const symbol = ticker.replace(/\.GH$/i, '').toUpperCase();
+  const terms = [`${symbol} annual`, `${symbol} audited`, `${symbol} financial`];
 
   for (const term of terms) {
     const apiUrl = `${WP_POSTS}?search=${encodeURIComponent(term)}&per_page=5&categories=21&_fields=id,title,content`;
@@ -31,9 +49,7 @@ export async function fetchGseReportPdf(ticker) {
       const r = await fetch(PROXY + encodeURIComponent(apiUrl));
       if (!r.ok) continue;
       posts = await r.json();
-    } catch {
-      continue;
-    }
+    } catch { continue; }
 
     if (!Array.isArray(posts) || posts.length === 0) continue;
 
@@ -41,7 +57,7 @@ export async function fetchGseReportPdf(ticker) {
       const content = post.content?.rendered || '';
       const title = post.title?.rendered || symbol;
 
-      // PDF href may be missing https:// prefix
+      // href may be missing https:// prefix
       const m = content.match(/href=["']((?:https?:\/\/)?gse\.com\.gh\/wp-content\/uploads\/[^"']+\.pdf)/i);
       if (!m) continue;
 
@@ -49,14 +65,9 @@ export async function fetchGseReportPdf(ticker) {
       if (!pdfUrl.startsWith('http')) pdfUrl = 'https://' + pdfUrl;
 
       try {
-        const pdfRes = await fetch(PROXY + encodeURIComponent(pdfUrl));
-        if (!pdfRes.ok) continue;
-        const buffer = await pdfRes.arrayBuffer();
-        const base64 = arrayBufferToBase64(buffer);
-        return { base64, title, url: pdfUrl };
-      } catch {
-        continue;
-      }
+        const base64 = await fetchPdfAsBase64(pdfUrl);
+        return { base64, title, url: pdfUrl, fiscalYear: null };
+      } catch { continue; }
     }
   }
 
