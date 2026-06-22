@@ -93,7 +93,7 @@ export default function StockOverview({ ticker, stockData }) {
     : null;
   const rangePct = _rp != null && !isNaN(_rp) ? _rp : null;
 
-  const hasFund = q.marketCap != null || q.trailingPE != null;
+  const hasFund = q.marketCap != null || q.trailingPE != null || q.yearlyChangePercent != null;
 
   return (
     <div className="space-y-3 animate-slide-in">
@@ -184,9 +184,15 @@ export default function StockOverview({ ticker, stockData }) {
           <FundCard title="Valuation">
             <Row label="Market Cap"   val={money(q.marketCap, q.currency)} />
             <Row label="P/E (TTM)"    val={fmt(q.trailingPE)} />
-            <Row label="Forward P/E"  val={fmt(q.forwardPE)} />
             <Row label="EPS (TTM)"    val={fmt(q.trailingEps)} />
             <Row label="Beta"         val={fmt(q.beta)} />
+            {q.yearlyChangePercent != null && (
+              <Row
+                label="1-Year Return"
+                val={`${q.yearlyChangePercent >= 0 ? '+' : ''}${q.yearlyChangePercent.toFixed(1)}%`}
+                highlight={q.yearlyChangePercent >= 0 ? 'buy' : 'sell'}
+              />
+            )}
           </FundCard>
           <FundCard title="Financials">
             <Row label="Revenue TTM"  val={money(q.revenueTotal, q.currency)} />

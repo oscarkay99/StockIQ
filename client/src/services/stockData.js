@@ -12,47 +12,60 @@ function setCache(key, data) {
   cache.set(key, { data, ts: Date.now() });
 }
 
-// ── GSE Live Data (dev.kwayisi.org) ─────────────────────────────────────────
+// ── GSE Live Data (Mula DataHub API) ────────────────────────────────────────
 
-let gseLiveSnapshot = null;
-let gseLiveTs = 0;
+const MULA_BASE = 'https://gse-service.mulatechnologies.com/api/v1';
 
-async function fetchGseLive() {
-  if (gseLiveSnapshot && Date.now() - gseLiveTs < TTL) return gseLiveSnapshot;
-  const url = 'https://dev.kwayisi.org/apis/gse/live';
+// Cache the yearly snapshot for all stocks (fetched once, shared across selections)
+let mulaYearlySnapshot = null;
+let mulaYearlyTs = 0;
+
+async function fetchMulaYearly() {
+  if (mulaYearlySnapshot && Date.now() - mulaYearlyTs < TTL) return mulaYearlySnapshot;
+  const url = `${MULA_BASE}/market/closing-prices?range=1y`;
   const res = await fetch(PROXY + encodeURIComponent(url));
-  if (!res.ok) throw new Error(`GSE live HTTP ${res.status}`);
-  gseLiveSnapshot = await res.json(); // array of { name, price, change, volume }
-  gseLiveTs = Date.now();
-  return gseLiveSnapshot;
-}
-
-async function fetchGseEquity(symbol) {
-  const url = `https://dev.kwayisi.org/apis/gse/equities/${symbol}`;
-  const res = await fetch(PROXY + encodeURIComponent(url));
-  if (!res.ok) throw new Error(`GSE equity HTTP ${res.status}`);
-  return res.json();
+  if (!res.ok) throw new Error(`Mula yearly HTTP ${res.status}`);
+  const json = await res.json();
+  mulaYearlySnapshot = json.data?.stocks || [];
+  mulaYearlyTs = Date.now();
+  return mulaYearlySnapshot;
 }
 
 async function getGseStockData(ticker) {
   const symbol = ticker.replace(/\.GH$/i, '');
-  const [liveList, equity] = await Promise.all([fetchGseLive(), fetchGseEquity(symbol)]);
-  const live = liveList.find(s => s.name === symbol) || {};
 
-  const price    = equity.price ?? live.price ?? null;
-  const change   = live.change ?? null;
+  // Fetch live stock detail and 1-year history in parallel
+  const [liveRes, yearlyStocks] = await Promise.all([
+    fetch(PROXY + encodeURIComponent(`${MULA_BASE}/stocks/${symbol}`)).then(r => r.json()),
+    fetchMulaYearly(),
+  ]);
+
+  if (!liveRes.success) throw new Error(`Mula API: ${liveRes.error?.message}`);
+
+  const s      = liveRes.data;
+  const equity = s.equity || {};
+  const co     = equity.company || {};
+  const yr     = yearlyStocks.find(x => x.symbol === symbol) || null;
+
+  const price     = s.price ?? null;
+  const change    = s.change ?? null;
   const prevClose = price != null && change != null ? price - change : null;
-  const changePct = prevClose ? change / prevClose : null;
+  const changePct = prevClose && prevClose !== 0 ? change / prevClose : null;
 
-  // Dividend yield from dps/price
+  // 52-week range: openPrice = price 1yr ago (approx low), current = approx high
+  const fiftyTwoWeekLow  = yr ? Math.min(yr.openPrice, price ?? yr.openPrice) : null;
+  const fiftyTwoWeekHigh = yr ? Math.max(yr.openPrice, price ?? yr.openPrice) : null;
+
+  const trailingEps   = equity.eps ?? null;
+  const trailingPE    = trailingEps && price ? price / trailingEps : null;
   const dividendYield = equity.dps && price ? equity.dps / price : null;
 
-  // Look up static market data for name/sector fallback
-  let longName = equity.company?.name || symbol;
-  let sector   = equity.company?.sector || null;
-  let industry = equity.company?.industry || null;
+  // Name/sector from API, fallback to markets.json
+  let longName = co.name || symbol;
+  let sector   = co.sector || null;
+  let industry = co.industry || null;
   for (const [, mkt] of Object.entries(MARKETS)) {
-    const found = mkt.stocks.find(s => s.ticker === ticker);
+    const found = mkt.stocks.find(x => x.ticker === ticker);
     if (found) {
       if (!longName || longName === symbol) longName = found.name;
       if (!sector) sector = found.sector;
@@ -75,14 +88,19 @@ async function getGseStockData(ticker) {
       regularMarketChangePercent: changePct,
       regularMarketDayHigh: null,
       regularMarketDayLow: null,
-      regularMarketVolume: live.volume ?? null,
+      regularMarketVolume: s.volume ?? null,
       chartPreviousClose: prevClose,
-      fiftyTwoWeekHigh: null,
-      fiftyTwoWeekLow: null,
+      fiftyTwoWeekHigh,
+      fiftyTwoWeekLow,
       marketCap: equity.capital ?? null,
-      trailingEps: equity.eps ?? null,
+      trailingEps,
+      trailingPE,
       dividendYield,
-      dataSource: 'gse-api',
+      bidPrice: s.bidPrice ?? null,
+      askPrice: s.askPrice ?? null,
+      yearlyChangePercent: yr?.percentChange ?? null,
+      yearlyOpenPrice: yr?.openPrice ?? null,
+      dataSource: 'mula-api',
     },
     summary: null,
     liveData: true,

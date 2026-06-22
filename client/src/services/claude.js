@@ -19,29 +19,34 @@ function buildStockContext(stockData, extraContext = '') {
   const hasFund = q.marketCap != null || q.trailingPE != null || q.trailingEps != null;
   const cur = q.currency || 'USD';
 
+  const has52W = q.fiftyTwoWeekHigh != null && q.fiftyTwoWeekLow != null;
+  const rangePctStr = has52W && q.regularMarketPrice != null
+    ? `${(((q.regularMarketPrice - q.fiftyTwoWeekLow) / (q.fiftyTwoWeekHigh - q.fiftyTwoWeekLow)) * 100).toFixed(1)}% of 52W range`
+    : null;
+
   const priceSection = hasLive ? `
 LIVE PRICE DATA (source: ${q.dataSource || 'live'}):
 - Current Price: ${fmt(q.regularMarketPrice, cur + ' ')}
 - Day Change: ${q.regularMarketChange != null ? `${q.regularMarketChange >= 0 ? '+' : ''}${fmt(q.regularMarketChange)} (${q.regularMarketChangePercent != null ? (q.regularMarketChangePercent * 100).toFixed(2) + '%' : 'N/A'})` : 'N/A'}
-- Day High / Low: ${fmt(q.regularMarketDayHigh)} / ${fmt(q.regularMarketDayLow)}
-- Volume: ${fmt(q.regularMarketVolume)}
-- 52-Week High: ${fmt(q.fiftyTwoWeekHigh)}  |  52-Week Low: ${fmt(q.fiftyTwoWeekLow)}
-- Previous Close: ${fmt(q.chartPreviousClose, cur + ' ')}` : `
+- Volume (today): ${fmt(q.regularMarketVolume)}
+- Previous Close: ${fmt(q.chartPreviousClose, cur + ' ')}
+- 52-Week High: ${fmt(q.fiftyTwoWeekHigh, cur + ' ')}  |  52-Week Low: ${fmt(q.fiftyTwoWeekLow, cur + ' ')}${rangePctStr ? `  (currently at ${rangePctStr})` : ''}
+${q.yearlyChangePercent != null ? `- 1-Year Price Change: ${q.yearlyChangePercent >= 0 ? '+' : ''}${q.yearlyChangePercent.toFixed(2)}% (from ${cur} ${fmt(q.yearlyOpenPrice)} one year ago)` : ''}
+${q.bidPrice != null ? `- Bid: ${cur} ${fmt(q.bidPrice)}  |  Ask: ${cur} ${fmt(q.askPrice)}` : ''}` : `
 NOTE: Live price data is not available for this ticker via the current data provider.`;
 
   const fundSection = hasFund ? `
 FUNDAMENTAL DATA:
 - Market Cap: ${fmt(q.marketCap, cur + ' ')}
-- P/E Ratio (TTM): ${fmt(q.trailingPE)}
-- Forward P/E: ${fmt(q.forwardPE)}
-- EPS (TTM): ${fmt(q.trailingEps, cur + ' ')}
+- P/E Ratio (TTM): ${q.trailingPE != null ? fmt(q.trailingPE) : 'N/A'}
+- EPS (TTM): ${q.trailingEps != null ? fmt(q.trailingEps, cur + ' ') : 'N/A'}
 - Dividend Yield: ${q.dividendYield != null ? (q.dividendYield * 100).toFixed(2) + '%' : 'N/A'}
-- Beta: ${fmt(q.beta)}
-- Revenue (TTM): ${fmt(q.revenueTotal, cur + ' ')}
+- Beta: ${q.beta != null ? fmt(q.beta) : 'N/A'}
+- Revenue (TTM): ${q.revenueTotal != null ? fmt(q.revenueTotal, cur + ' ') : 'N/A'}
 - Profit Margin: ${q.profitMargin != null ? (q.profitMargin * 100).toFixed(2) + '%' : 'N/A'}
 - Operating Margin: ${q.operatingMargin != null ? (q.operatingMargin * 100).toFixed(2) + '%' : 'N/A'}
 - Return on Equity: ${q.returnOnEquity != null ? (q.returnOnEquity * 100).toFixed(2) + '%' : 'N/A'}
-- Analyst Rating: ${q.analystRating || 'N/A'}  |  Target Price: ${fmt(q.analystTargetPrice)}` : `
+- Analyst Rating: ${q.analystRating || 'N/A'}  |  Target Price: ${q.analystTargetPrice != null ? fmt(q.analystTargetPrice) : 'N/A'}` : `
 NOTE: Detailed fundamental metrics are not available. Use your training knowledge for fundamentals.`;
 
   return `
