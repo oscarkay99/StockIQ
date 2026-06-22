@@ -82,7 +82,7 @@ function SignalCard({ sig, streaming, isAiOnly }) {
       {/* Verdict row */}
       <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
         <div className="flex items-center gap-3">
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isB ? 'bg-gain/15' : isS ? 'bg-loss/15' : 'bg-gold/15'}`}>
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isAnyBuy ? 'bg-gain/15' : isAnySell ? 'bg-loss/15' : 'bg-gold/15'}`}>
             <Icon size={22} className={verdictColor} strokeWidth={2.5} />
           </div>
           <div>
