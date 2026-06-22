@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { Sparkles, RefreshCw, ChevronDown, Loader2, Play, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Sparkles, RefreshCw, ChevronDown, Loader2, Play, TrendingUp, TrendingDown, Minus, ChevronsUp, ChevronsDown } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { streamAnalysis } from '../services/claude.js';
 
@@ -58,16 +58,21 @@ function SignalCard({ sig, streaming, isAiOnly }) {
   const rr      = parseFloat(sig.RISK_REWARD) || 0;
   const horizon = sig.TIME_HORIZON || '';
 
-  const isB = verdict === 'BUY';
-  const isS = verdict === 'SELL';
+  const isStrongBuy  = verdict === 'STRONG_BUY';
+  const isBuy        = verdict === 'BUY';
+  const isSell       = verdict === 'SELL';
+  const isStrongSell = verdict === 'STRONG_SELL';
+  const isAnyBuy     = isStrongBuy || isBuy;
+  const isAnySell    = isSell || isStrongSell;
 
-  const verdictColor = isB ? 'text-gain' : isS ? 'text-loss' : 'text-gold';
-  const verdictBg    = isB ? 'bg-gain/10 border-gain/30' : isS ? 'bg-loss/10 border-loss/30' : 'bg-gold/10 border-gold/30';
+  const verdictLabel = verdict.replace('_', ' ');
+  const verdictColor = isAnyBuy ? 'text-gain' : isAnySell ? 'text-loss' : 'text-gold';
+  const verdictBg    = isAnyBuy ? 'bg-gain/10 border-gain/30' : isAnySell ? 'bg-loss/10 border-loss/30' : 'bg-gold/10 border-gold/30';
   const confColor    = conf === 'HIGH' ? 'badge-green' : conf === 'LOW' ? 'badge-red' : 'badge-gold';
-  const scoreColor   = score >= 72 ? 'text-gain' : score >= 50 ? 'text-gold' : 'text-loss';
-  const scoreBarColor = score >= 72 ? 'bg-gain' : score >= 50 ? 'bg-gold' : 'bg-loss';
+  const scoreColor   = score >= 65 ? 'text-gain' : score >= 40 ? 'text-gold' : 'text-loss';
+  const scoreBarColor = score >= 65 ? 'bg-gain' : score >= 40 ? 'bg-gold' : 'bg-loss';
   const rrColor      = rr >= 2.5 ? 'text-gain' : rr >= 1.5 ? 'text-gold' : 'text-loss';
-  const Icon = isB ? TrendingUp : isS ? TrendingDown : Minus;
+  const Icon = isStrongBuy ? ChevronsUp : isBuy ? TrendingUp : isStrongSell ? ChevronsDown : isAnySell ? TrendingDown : Minus;
 
   const fmt = (v) => (v && v !== '0.00' && v !== '0.0' && v !== '0') ? `${cur} ${parseFloat(v).toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
   const upPct = sig.UPSIDE_PCT && sig.UPSIDE_PCT !== '0.0' && sig.UPSIDE_PCT !== '0' ? `${parseFloat(sig.UPSIDE_PCT) > 0 ? '+' : ''}${sig.UPSIDE_PCT}%` : null;
@@ -81,7 +86,7 @@ function SignalCard({ sig, streaming, isAiOnly }) {
             <Icon size={22} className={verdictColor} strokeWidth={2.5} />
           </div>
           <div>
-            <div className={`text-2xl font-black tracking-tight leading-none ${verdictColor}`}>{verdict}</div>
+            <div className={`text-2xl font-black tracking-tight leading-none ${verdictColor}`}>{verdictLabel}</div>
             <div className="text-[11px] text-t3 mt-0.5">AI Trade Signal</div>
           </div>
         </div>
@@ -155,10 +160,22 @@ export default function AnalysisHub({ ticker, stockData }) {
   const [streaming, setStreaming] = useState(false);
   const [extraCtx, setExtraCtx]   = useState('');
   const [showCtx, setShowCtx]     = useState(false);
-  const abortRef  = useRef(null);
-  const bottomRef = useRef(null);
+  const abortRef      = useRef(null);
+  const bottomRef     = useRef(null);
+  const runRef        = useRef(null);
+  const autoRanFor    = useRef(null); // tracks which ticker auto-run already fired
 
-  useEffect(() => { setResults({}); setActive('trade_signal'); }, [ticker]);
+  useEffect(() => { runRef.current = run; });
+
+  // Reset and auto-run immediately on ticker change
+  // Prompt uses Claude's training knowledge so doesn't need to wait for live data
+  useEffect(() => {
+    if (!ticker) return;
+    setResults({});
+    setActive('trade_signal');
+    autoRanFor.current = ticker;
+    setTimeout(() => runRef.current?.('trade_signal'), 0);
+  }, [ticker]);
 
   useEffect(() => {
     if (streaming && bottomRef.current) {

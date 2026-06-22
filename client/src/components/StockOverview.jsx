@@ -37,6 +37,24 @@ export default function StockOverview({ ticker, stockData }) {
   const q = stockData?.quote;
   if (!q) return null;
 
+  /* ── Loading skeleton ── */
+  if (q.dataSource === 'loading') {
+    return (
+      <div className="panel px-5 py-4 animate-pulse space-y-3">
+        <div className="flex justify-between items-start">
+          <div className="space-y-2">
+            <div className="h-5 w-44 bg-raised rounded" />
+            <div className="h-3 w-28 bg-raised rounded" />
+          </div>
+          <div className="h-8 w-24 bg-raised rounded" />
+        </div>
+        <div className="grid grid-cols-4 gap-px pt-3 border-t border-rim">
+          {[1,2,3,4].map(i => <div key={i} className="h-8 bg-raised rounded" />)}
+        </div>
+      </div>
+    );
+  }
+
   /* ── AI-only mode ── */
   if (q.dataSource === 'ai-only') {
     return (

@@ -13,9 +13,15 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [view, setView] = useState('stocks');        // 'stocks' | 'screener'
 
+  // New stock selected (shows instantly with stub data)
   const handleSelect = useCallback((ticker, data) => {
     setSelected({ ticker, data });
     setView('stocks');
+  }, []);
+
+  // Live data arrived in background — only apply if ticker is still active
+  const handleLiveUpdate = useCallback((ticker, data) => {
+    setSelected(prev => prev?.ticker === ticker ? { ticker, data } : prev);
   }, []);
 
   return (
@@ -24,6 +30,7 @@ export default function App() {
         sidebarOpen={sidebarOpen}
         onToggleSidebar={() => setSidebarOpen(v => !v)}
         onSelectStock={handleSelect}
+        onLiveUpdate={handleLiveUpdate}
         view={view}
         onSetView={setView}
       />
@@ -37,7 +44,7 @@ export default function App() {
             ${sidebarOpen ? 'w-60' : 'w-0 overflow-hidden'}
           `}
         >
-          <Sidebar onSelectStock={handleSelect} activeTicker={selected?.ticker} />
+          <Sidebar onSelectStock={handleSelect} onLiveUpdate={handleLiveUpdate} activeTicker={selected?.ticker} />
         </aside>
 
         {/* Main */}

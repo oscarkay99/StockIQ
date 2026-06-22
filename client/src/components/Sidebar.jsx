@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronRight, Loader2 } from 'lucide-react';
 import MARKETS from '../data/markets.json';
-import { getFullStockData } from '../services/stockData.js';
+import { getFullStockData, buildStubFromMarkets } from '../services/stockData.js';
 
 const MARKET_FLAGS = { GSE: '🇬🇭', NYSE_NASDAQ: '🇺🇸', NSE: '🇳🇬', JSE: '🇿🇦' };
 
-export default function Sidebar({ onSelectStock, activeTicker }) {
+export default function Sidebar({ onSelectStock, onLiveUpdate, activeTicker }) {
   const [markets] = useState(MARKETS);
   const [expanded, setExpanded] = useState({ GSE: true });
   const [loading, setLoading]   = useState({});
@@ -13,12 +13,14 @@ export default function Sidebar({ onSelectStock, activeTicker }) {
   const toggle = (key) => setExpanded(p => ({ ...p, [key]: !p[key] }));
 
   const pick = async (stock) => {
+    // Show instantly with local stub data, then fetch live data in background
+    onSelectStock(stock.ticker, buildStubFromMarkets(stock.ticker));
     setLoading(p => ({ ...p, [stock.ticker]: true }));
     try {
       const data = await getFullStockData(stock.ticker);
-      onSelectStock(stock.ticker, data);
+      onLiveUpdate(stock.ticker, data);
     } catch {
-      onSelectStock(stock.ticker, { quote: { symbol: stock.ticker, longName: stock.name, dataSource: 'ai-only' }, summary: null, liveData: false });
+      onLiveUpdate(stock.ticker, { quote: { symbol: stock.ticker, longName: stock.name, dataSource: 'ai-only' }, summary: null, liveData: false });
     } finally {
       setLoading(p => ({ ...p, [stock.ticker]: false }));
     }

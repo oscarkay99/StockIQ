@@ -56,7 +56,7 @@ ${extraContext ? `\nADDITIONAL CONTEXT:\n${extraContext}` : ''}
 `.trim();
 }
 
-const DIRECT = `Be direct. No intros, no padding, no "In conclusion". Lead with the verdict. Use bullet points. Max 220 words total.\n\n`;
+const DIRECT = `Be direct and confident. No intros, no padding, no hedging. Lead with the verdict. Give real numbers and specific projections — the user wants to know if they will make or lose money. Max 220 words total.\n\n`;
 
 const ANALYSES = {
   fundamental: {
@@ -259,46 +259,50 @@ Output format:
 **Hedge:** [What to own alongside this to protect against the main risk]`,
   },
   trade_signal: {
-    buildPrompt: (ctx) => `You are a quantitative trading analyst. Score this stock across three pillars and produce a precise trade signal.
+    buildPrompt: (ctx) => `You are a quantitative trading analyst with deep knowledge of global equities. Produce a decisive, differentiated trade signal for this specific stock.
 
 ${ctx}
 
 ---
 SCORING FRAMEWORK
 
-Score each pillar 1–10 using only the data provided above:
+Score each pillar 1–10. Use the live data above when available. For any missing metrics, DRAW ON YOUR TRAINING KNOWLEDGE of this specific company — its financial history, sector standing, competitive position, earnings track record, and macro context. Every stock is different. Do NOT default to middle scores.
 
 TECHNICAL (40% weight)
-- Trend: where is current price in 52-week range? (>70% = bullish, 30–70% = neutral, <30% = bearish)
-- Momentum: day change direction and magnitude
-- Volume: above/below average (estimate if not given)
-- Key levels: distance to 52W high (resistance) and 52W low (support)
+- Price position: if live price given, where is it in 52-week range? (>70% = bullish, <30% = bearish)
+- If no live price: assess recent price trend from your knowledge (momentum, 52W range estimates)
+- Volume and volatility profile vs. sector peers
+- Key support/resistance from known price history
 
-FUNDAMENTAL (40% weight)
-- Valuation: P/E vs sector norm (low P/E = more points)
-- Quality: ROE, profit margin, operating margin
-- Analyst consensus: rating and gap between target and current price
-- Dividend yield (bonus points if >3%)
+FUNDAMENTAL (40% weight) — BE SPECIFIC TO THIS COMPANY
+- Valuation: actual P/E, P/B vs. sector peers (not generic estimates — use what you know)
+- Quality: profit margins, ROE, revenue growth trajectory from recent financials
+- Balance sheet: debt level, cash generation, dividend track record
+- Competitive moat: pricing power, market share, barriers to entry
+- A sector leader with strong fundamentals should score 7–9. A weak or struggling company should score 2–4.
 
 MOMENTUM (20% weight)
-- Recent price trend (positive/negative change %)
-- Analyst target upside (if available)
-- Sector momentum and macro tailwinds
+- Recent earnings trend: beats or misses? Revenue growth accelerating or slowing?
+- Analyst consensus and price target direction (upgrade/downgrade cycle)
+- Sector and macro tailwinds or headwinds specific to this company
+- Any known catalysts (product launch, policy change, commodity price move, etc.)
 
 COMPOSITE SCORE = (TECH × 0.40 + FUND × 0.40 + MOM × 0.20) × 10  → round to integer (0–100)
 
-VERDICT RULES (based on composite score):
-- Score ≥ 72 → BUY
-- Score 50–71 → HOLD
-- Score < 50 → SELL
+VERDICT RULES (strict — follow the score, do not soften):
+- Score ≥ 82 → STRONG_BUY  (multiple pillars aligned, high conviction)
+- Score 65–81 → BUY         (positive bias, clear upside)
+- Score 40–64 → HOLD        (mixed signals, wait for catalyst)
+- Score 22–39 → SELL        (negative bias, reduce exposure)
+- Score < 22  → STRONG_SELL (multiple pillars negative, avoid)
 
 CONFIDENCE RULES:
-- HIGH: composite score ≥ 75 or ≤ 30 (strong signal, multiple factors agree)
-- LOW: mixed signals or very limited data
+- HIGH: score ≥ 82 or ≤ 22 (strong signal, factors strongly agree)
+- LOW: score 45–59 (genuinely mixed — rare, justify it) or truly insufficient data
 - MEDIUM: everything else
 
 RISK/REWARD: (TARGET_12M − ENTRY_MID) / (ENTRY_MID − STOP_LOSS)  → round to 1 decimal
-TIME_HORIZON: SHORT (1–4 weeks) if momentum-driven | MEDIUM (1–3 months) if technical | LONG (6–12 months) if fundamental
+TIME_HORIZON: SHORT (1–4 weeks) | MEDIUM (1–3 months) | LONG (6–12 months)
 
 ---
 IMPORTANT: Begin your response with EXACTLY this block (no extra text before it):
@@ -323,31 +327,32 @@ TIME_HORIZON: MEDIUM
 ===END===
 
 Rules:
-- VERDICT: BUY, SELL, or HOLD (use the scoring framework above — do NOT override with gut feel)
+- VERDICT: STRONG_BUY, BUY, HOLD, SELL, or STRONG_SELL — follow the score strictly
 - CONFIDENCE: HIGH, MEDIUM, or LOW
-- TECH_SCORE / FUND_SCORE / MOM_SCORE: integers 1–10
-- SIGNAL_SCORE: integer 0–100 (composite from formula above)
-- RISK_REWARD: decimal e.g. 2.5 (reward-to-risk ratio)
-- TIME_HORIZON: SHORT | MEDIUM | LONG
+- TECH_SCORE / FUND_SCORE / MOM_SCORE: integers 1–10 — differentiate, do NOT score everything 5
+- SIGNAL_SCORE: integer 0–100
 - All prices: plain numbers, no currency symbols
 - CURRENCY: GHS for Ghana, NGN for Nigeria, ZAR for South Africa, USD for US
-- UPSIDE_PCT: % gain/loss from entry midpoint to 12M target
-- NEVER output 0.00 for price fields. If live data is missing, you MUST estimate from your training knowledge using the company name, sector, exchange, and currency provided. Use realistic price ranges for the market (e.g. GHS 0.10–50 for small GSE stocks, NGN 1–500 for NSE). If genuinely unknown, use a conservative sector-average estimate and flag it in your thesis.
+- UPSIDE_PCT: % from entry midpoint to 12M target (can be negative for SELL/STRONG_SELL)
+- NEVER output 0.00 for price fields. Estimate from your knowledge of the stock's typical price range. For GSE stocks use GHS 0.10–50 range; for NSE use NGN 1–1000; for JSE use ZAR 5–5000.
 
-After the signal block, max 180 words:
+After the signal block, max 200 words. Be bold and specific — do not hedge everything. Give real projections.
 
-**Thesis:** [2 sentences — the single most important reason for this verdict]
+**Verdict:** [Restate STRONG BUY / BUY / HOLD / SELL / STRONG SELL with one sharp sentence explaining why]
+
+**12-month outlook:** [State a clear price target and expected return %. e.g. "Expect 35% upside to GHS X.XX by mid-2026 driven by..."]
 
 **Bulls say:**
-- [strongest technical or fundamental supporting factor]
-- [key catalyst or value argument]
+- [specific fundamental or technical argument with actual figures you know]
+- [key catalyst that could accelerate the move]
 
 **Bears say:**
-- [biggest risk to the thesis]
-- [what could go wrong]
+- [biggest company-specific risk — be specific, not generic]
+- [exact condition that would flip this from BUY to SELL]
 
-**Entry trigger:** [exact price level or event that confirms the entry]
-**Cut position if:** [specific condition that invalidates the thesis]`,
+**Entry:** [specific price level]
+**Stop-loss:** [specific price level — if breached, exit immediately]
+**Cut if:** [one specific event or condition that invalidates the thesis completely]`,
   },
   dividend_analysis: {
     buildPrompt: (ctx) => `${DIRECT}You are a dividend investing specialist. Give me a direct dividend verdict on this stock.

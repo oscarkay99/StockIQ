@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Menu, TrendingUp, Search, Loader2, X, Wifi, ScanSearch } from 'lucide-react';
-import { searchStocks, getFullStockData } from '../services/stockData.js';
+import { searchStocks, getFullStockData, buildStubFromMarkets } from '../services/stockData.js';
 
-export default function Header({ sidebarOpen, onToggleSidebar, onSelectStock, view, onSetView }) {
+export default function Header({ sidebarOpen, onToggleSidebar, onSelectStock, onLiveUpdate, view, onSetView }) {
   const [query, setQuery]       = useState('');
   const [results, setResults]   = useState([]);
   const [open, setOpen]         = useState(false);
@@ -36,11 +36,12 @@ export default function Header({ sidebarOpen, onToggleSidebar, onSelectStock, vi
 
   const loadStock = async (ticker) => {
     setOpen(false); setQuery(ticker); setFetching(true);
+    onSelectStock(ticker, buildStubFromMarkets(ticker));
     try {
       const data = await getFullStockData(ticker);
-      onSelectStock(ticker, data);
+      onLiveUpdate(ticker, data);
     } catch (err) {
-      alert(`Could not load "${ticker}": ${err.message}`);
+      console.error(`Could not load live data for "${ticker}": ${err.message}`);
     } finally { setFetching(false); }
   };
 

@@ -157,6 +157,25 @@ function aiOnlyStub(ticker) {
 
 // ── Public API ───────────────────────────────────────────────────────────────
 
+export function buildStubFromMarkets(ticker) {
+  let longName = ticker, sector = null, currency = null, exchange = null;
+  for (const [, mkt] of Object.entries(MARKETS)) {
+    const found = mkt.stocks.find(s => s.ticker === ticker);
+    if (found) {
+      longName = found.name;
+      sector   = found.sector;
+      currency = mkt.currency;
+      exchange = mkt.name;
+      break;
+    }
+  }
+  return {
+    quote: { symbol: ticker, longName, shortName: longName, sector, currency, exchange, fullExchangeName: exchange, dataSource: 'loading' },
+    summary: null,
+    liveData: false,
+  };
+}
+
 export async function getFullStockData(ticker) {
   const key = `full:${ticker}`;
   const cached = fromCache(key);
