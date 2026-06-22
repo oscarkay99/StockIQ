@@ -231,5 +231,31 @@
     ],
     "pageUrl": "https://gse.com.gh/financial-statement/pr-021-unilever-ghana-plc-unaudited-financial-statements-for-the-year-ended-december-31-2024/",
     "fiscalYear": 2024
+  },
+  "ACCESS.GH": {
+    "pdfUrl": "https://gse.com.gh/wp-content/uploads/2026/04/PR-177-ACCESS-BANK-PLC-SUMMARY-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-31-DECEMBER-20251.pdf",
+    "pdfUrls": [
+      "https://gse.com.gh/wp-content/uploads/2026/04/PR-177-ACCESS-BANK-PLC-SUMMARY-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-31-DECEMBER-20251.pdf",
+      "https://gse.com.gh/wp-content/uploads/2026/04/PR-177-ACCESS-BANK-PLC-SUMMARY-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-31-DECEMBER-20252.pdf"
+    ],
+    "pageUrl": "https://gse.com.gh/financial-statement/pr-177-access-bank-plc-summary-financial-statements-for-the-year-ended-31-december-2025/",
+    "fiscalYear": 2025
+  },
+  "SOGEGH.GH": {
+    "pdfUrl": "https://gse.com.gh/wp-content/uploads/2025/03/PR-138-SOCIETE-GENERAL-GHANA-PLC-2022-AUDITED-FINANCIAL-STATEMENTS1.pdf",
+    "pdfUrls": [
+      "https://gse.com.gh/wp-content/uploads/2025/03/PR-138-SOCIETE-GENERAL-GHANA-PLC-2022-AUDITED-FINANCIAL-STATEMENTS1.pdf",
+      "https://gse.com.gh/wp-content/uploads/2025/03/PR-138-SOCIETE-GENERAL-GHANA-PLC-2022-AUDITED-FINANCIAL-STATEMENTS.pdf"
+    ],
+    "pageUrl": "https://gse.com.gh/financial-statement/pr-138-societe-general-ghana-plc-2022-audited-financial-statements/",
+    "fiscalYear": 2022
+  },
+  "MMH.GH": {
+    "pdfUrl": "https://gse.com.gh/wp-content/uploads/2022/12/PR-392-MERIDIAN-MARSHALLS-HOLDINGS-LIMITED-CONSOLIDATED-REPORTS-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-JULY-3120222.pdf",
+    "pdfUrls": [
+      "https://gse.com.gh/wp-content/uploads/2022/12/PR-392-MERIDIAN-MARSHALLS-HOLDINGS-LIMITED-CONSOLIDATED-REPORTS-AND-FINANCIAL-STATEMENTS-FOR-THE-YEAR-ENDED-JULY-3120222.pdf"
+    ],
+    "pageUrl": "https://gse.com.gh/financial-statement/pr-392-2022-mmh-consolidated-reports-and-financial-statements-for-the-year-ended-july-31-2022/",
+    "fiscalYear": 2022
   }
 }
