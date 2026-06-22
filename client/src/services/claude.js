@@ -66,25 +66,52 @@ const DIRECT = `Be direct and confident. No intros, no padding, no hedging. Lead
 
 const ANALYSES = {
   fundamental: {
-    buildPrompt: (ctx) => `${DIRECT}You are an equity analyst. Give a direct fundamental verdict on this stock.
+    buildPrompt: (ctx) => `${DIRECT}You are an equity analyst. Run this stock through a 6-point fundamental checklist and give a decisive verdict.
 
 ${ctx}
 
-Output format — use exactly this structure:
+Use the data above plus your training knowledge about this specific company. Be specific with numbers.
 
-**[STRONG BUY / BUY / HOLD / SELL / AVOID]**
+---
 
-| Metric | Value | Signal |
-|--------|-------|--------|
-| P/E (TTM) | X | Cheap / Fair / Expensive |
-| ROE | X% | Strong / Weak |
-| Profit Margin | X% | — |
-| Dividend Yield | X% | — |
-| Debt/Equity | X | Safe / High |
+**VERDICT: [STRONG BUY / BUY / HOLD / SELL / AVOID]**
 
-**Why:** [2 sentences max — the #1 reason to buy or avoid]
+**6-Point Checklist:**
 
-**Key risk:** [1 sentence]`,
+**① Business clarity** — Do you understand what this company does and how it makes money?
+[1 sentence: business model in plain English + is it easy to understand Y/N]
+
+**② Balance sheet health**
+| | Value | Signal |
+|---|---|---|
+| Cash vs Short-term Debt | X vs X | Covered / At Risk |
+| Current Ratio | X.X | Safe (>1) / Risky (<1) |
+| Long-term Debt | X | Manageable / Heavy |
+
+**③ Profit quality**
+| | Value | Signal |
+|---|---|---|
+| Net Profit Margin | X% | Excellent (>20%) / Good (>10%) / Weak (<10%) |
+| Revenue Growth (YoY) | X% | Accelerating / Flat / Declining |
+| Free Cash Flow | Positive / Negative / Growing | — |
+
+**④ Valuation vs peers**
+| | Value | vs. Sector Avg | Signal |
+|---|---|---|---|
+| P/E Ratio | X | Sector avg: X | Cheap / Fair / Expensive |
+| P/S Ratio | X | — | — |
+| Dividend Yield | X% | — | — |
+
+**⑤ Management & track record**
+[1–2 sentences: CEO tenure, major decisions, any red flags or strong leadership signals]
+
+**⑥ Competitive moat**
+[1–2 sentences: what makes this company hard to compete with — brand, patents, market share, switching costs, network effects, or none]
+
+---
+
+**Bottom line:** [2 sentences — would you invest your own money here and why/why not]
+**Biggest risk:** [1 sentence — what would make this a bad investment]`,
   },
   technical: {
     buildPrompt: (ctx) => `${DIRECT}You are a technical analyst. Give direct trade levels for this stock.
@@ -180,7 +207,7 @@ Output format:
 **Verdict:** [Buy this or the sector ETF? 1 sentence]`,
   },
   risk: {
-    buildPrompt: (ctx) => `${DIRECT}You are a risk analyst. Rate this stock's risk and tell me how to size the position.
+    buildPrompt: (ctx) => `${DIRECT}You are a risk analyst. Assess this stock's risk across financial, business and market dimensions.
 
 ${ctx}
 
@@ -188,19 +215,27 @@ Output format:
 
 **Risk level:** [LOW / MEDIUM / HIGH / VERY HIGH]
 
-**Top 3 risks:**
-1. [Risk name]: [1 sentence]
+**Balance sheet risk:**
+| | Value | Red flag? |
+|---|---|---|
+| Current Ratio | X.X | Yes / No |
+| Debt coverage (cash vs debt) | X | Yes / No |
+| Free cash flow | Positive / Negative | Yes / No |
+
+**Top 3 risks (be specific to this company):**
+1. [Risk name]: [1 sentence — name the actual threat, not a generic one]
 2. [Risk name]: [1 sentence]
 3. [Risk name]: [1 sentence]
 
+**Moat durability:** [Strong / Moderate / Weak / None] — [1 sentence: what could erode it]
+
 **Position sizing:**
-- Conservative: [X% of portfolio]
-- Moderate: [X% of portfolio]
-- Aggressive: [X% of portfolio]
+- Conservative investor: [X% of portfolio]
+- Moderate investor: [X% of portfolio]
+- Aggressive investor: [X% of portfolio]
 
-**Stop-loss suggestion:** [price or % below entry]
-
-**One thing that would make me exit immediately:** [1 sentence]`,
+**Stop-loss:** [specific price or % below entry]
+**Exit immediately if:** [1 specific condition — not a generic "if fundamentals deteriorate"]`,
   },
   results: {
     buildPrompt: (ctx) => `${DIRECT}You are an earnings analyst. Tell me what to watch in this company's results.
@@ -224,24 +259,31 @@ Output format:
 **Red flag to watch:** [1 sentence — the thing that would be a serious warning sign]`,
   },
   growth_dividend: {
-    buildPrompt: (ctx) => `${DIRECT}You are an investment advisor. Classify this stock and tell me who should own it.
+    buildPrompt: (ctx) => `${DIRECT}You are an investment advisor. Classify this stock using Warren Buffett's framework: buy good businesses at fair prices and hold long-term.
 
 ${ctx}
 
 Output format:
 
-**Classification:** [Pure Growth / Growth + Income / Pure Income / Value]
+**Classification:** [Pure Growth / Growth + Income / Pure Income / Value / Speculative]
 
-| | Growth | Dividend |
-|---|--------|---------|
+**Business quality check:**
+- Understandable business model: [Yes / No] — [5 words why]
+- Competitive moat: [Strong / Moderate / Weak] — [5 words what it is]
+- FCF positive & growing: [Yes / No / Unknown]
+- Profitable (net margin >10%): [Yes / No / Marginal]
+
+| | Growth Score | Income Score |
+|---|---|---|
 | Score | X/10 | X/10 |
-| Key evidence | [brief] | [brief] |
+| Key evidence | [specific metric or fact] | [specific metric or fact] |
 
-**Best investor profile:** [1 sentence — "This stock is for someone who..."]
+**Buffett test:** Would a long-term investor be happy holding this for 10 years if the market closed tomorrow? [Yes / No / Maybe] — [1 sentence why]
 
-**Avoid if:** [1 sentence — who should NOT own this]
+**Best for:** [1 sentence — type of investor and time horizon]
+**Avoid if:** [1 sentence — who should NOT touch this]
 
-**In numbers:** For every GHS 10,000 / $5,000 invested: expected ~[X]% annual return from [growth/dividends/both]`,
+**In numbers:** Investing GHS 10,000 / $5,000 today — realistic expectation in 5 years: [range] from [growth/dividends/both], assuming [key assumption]`,
   },
   world_events: {
     buildPrompt: (ctx) => `${DIRECT}You are a geopolitical investment analyst. Tell me how world events affect this stock right now.
@@ -293,12 +335,14 @@ TECHNICAL (40% weight)
 - Volume and volatility profile vs. sector peers
 - Key support/resistance from known price history
 
-FUNDAMENTAL (40% weight) — BE SPECIFIC TO THIS COMPANY
-- Valuation: actual P/E, P/B vs. sector peers (not generic estimates — use what you know)
-- Quality: profit margins, ROE, revenue growth trajectory from recent financials
-- Balance sheet: debt level, cash generation, dividend track record
-- Competitive moat: pricing power, market share, barriers to entry
-- A sector leader with strong fundamentals should score 7–9. A weak or struggling company should score 2–4.
+FUNDAMENTAL (40% weight) — score using this 6-point framework, BE SPECIFIC:
+① Business model clarity: is it a simple, proven business? (+1 if yes)
+② Balance sheet: current ratio >1? Cash > short-term debt? Low long-term debt? (up to +3)
+③ Profit quality: net margin >20% = +2, >10% = +1, <0% = -2. Free cash flow positive & growing = +1
+④ Valuation vs sector peers: P/E below sector average = +2, in-line = +1, expensive = 0
+⑤ Management: long-tenured CEO, consistent strategy, no major scandals = +1
+⑥ Competitive moat: strong moat (brand/patents/network effects) = +2, some = +1, none = 0
+→ Tally gives 0–10. A sector leader with strong moat & healthy balance sheet = 8–10. A loss-making, debt-heavy company with no moat = 1–3.
 
 MOMENTUM (20% weight)
 - Recent earnings trend: beats or misses? Revenue growth accelerating or slowing?
