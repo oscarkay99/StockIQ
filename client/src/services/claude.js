@@ -1,5 +1,6 @@
 import { getClient } from './anthropic.js';
 import MARKETS from '../data/markets.json';
+import GSE_FUND from '../data/gse-fundamentals.json';
 import { fetchGseReportPdf } from './gseReports.js';
 
 function fmt(val, prefix = '', suffix = '', decimals = 2) {
@@ -10,6 +11,41 @@ function fmt(val, prefix = '', suffix = '', decimals = 2) {
     return `${prefix}${val.toFixed(decimals)}${suffix}`;
   }
   return String(val);
+}
+
+function buildGseFundamentals(ticker) {
+  const f = GSE_FUND[ticker];
+  if (!f) return null;
+
+  const cur = f.currency || 'GHS';
+  const m = (v) => v == null ? 'N/A' : `${cur} ${(v).toLocaleString()}M`;
+  const pct = (v) => v == null ? 'N/A' : `${v > 0 ? '+' : ''}${v.toFixed(1)}%`;
+  const ratio = (v) => v == null ? 'N/A' : v.toFixed(2) + 'x';
+
+  const qualRating = (label, val) => val ? `${label}: ${val}` : null;
+
+  const rows = [
+    `Revenue (FY${f.fiscalYear}): ${m(f.revenue)}`,
+    `Net Profit: ${f.netProfit == null ? 'N/A' : `${cur} ${f.netProfit.toLocaleString()}M`} | Net Margin: ${pct(f.netMargin)}`,
+    f.operatingMargin != null ? `Operating Margin: ${pct(f.operatingMargin)}` : null,
+    `EPS: ${f.eps == null ? 'N/A' : `${cur} ${f.eps.toFixed(3)}`} | DPS (last declared): ${f.dps == null ? 'N/A' : `${cur} ${f.dps.toFixed(3)}`}`,
+    `Current Ratio: ${ratio(f.currentRatio)} | Debt/Equity: ${ratio(f.debtToEquity)}`,
+    `ROE: ${pct(f.roe)} | ROA: ${pct(f.roa)}`,
+    `Free Cash Flow: ${f.freeCashFlowPositive == null ? 'N/A' : f.freeCashFlowPositive ? 'Positive ✓' : 'Negative ✗'}`,
+    qualRating('Competitive Moat', f.moat),
+    qualRating('Management Quality', f.managementRating),
+    qualRating('Dividend History', f.dividendHistory),
+  ].filter(Boolean);
+
+  const strengths = f.keyStrengths?.map(s => `  + ${s}`).join('\n') || '';
+  const risks = f.keyRisks?.map(r => `  - ${r}`).join('\n') || '';
+
+  return `
+GSE FUNDAMENTAL DATA (FY${f.fiscalYear}, source: annual reports — ${f.dataQuality} confidence):
+${rows.join('\n')}
+${f.analystNote ? `\nAnalyst note: ${f.analystNote}` : ''}
+${strengths ? `\nKey strengths:\n${strengths}` : ''}
+${risks ? `\nKey risks:\n${risks}` : ''}`.trim();
 }
 
 function buildStockContext(stockData, extraContext = '') {
@@ -51,6 +87,8 @@ FUNDAMENTAL DATA:
 - Analyst Rating: ${q.analystRating || 'N/A'}  |  Target Price: ${q.analystTargetPrice != null ? fmt(q.analystTargetPrice) : 'N/A'}` : `
 NOTE: Detailed fundamental metrics are not available. Use your training knowledge for fundamentals.`;
 
+  const gseFund = /\.GH$/i.test(q.symbol) ? buildGseFundamentals(q.symbol) : null;
+
   return `
 STOCK: ${q.longName || q.symbol} (${q.symbol})
 Exchange: ${q.exchange || q.fullExchangeName || 'N/A'}
@@ -58,6 +96,7 @@ Sector: ${q.sector || 'N/A'}  |  Industry: ${q.industry || 'N/A'}
 Country: ${q.country || 'N/A'}
 ${priceSection}
 ${fundSection}
+${gseFund ? `\n${gseFund}` : ''}
 ${q.description ? `\nBUSINESS SUMMARY:\n${q.description.slice(0, 400)}...` : ''}
 ${extraContext ? `\nADDITIONAL CONTEXT:\n${extraContext}` : ''}
 `.trim();

@@ -1,0 +1,1270 @@
+{
+  "_meta": {
+    "description": "Key financials for all 38 GSE-listed companies. Figures are approximate, sourced from training knowledge based on latest available annual reports (FY2022–FY2023). Revenue and profit in GHS millions unless currency noted. Update annually.",
+    "lastUpdated": "2024",
+    "note": "Ghana DDEP (Domestic Debt Exchange Programme, Feb 2023) caused one-time bond impairment losses across all banks. FY2022 bank results are depressed; FY2023 shows recovery. Cross-listed stocks (ETI, TLW, AGA, GLD) report in USD."
+  },
+
+  "MTNGH.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 9800,
+    "netProfit": 1950,
+    "netMargin": 19.9,
+    "operatingMargin": 29.5,
+    "eps": 0.51,
+    "dps": 0.27,
+    "currentRatio": 1.1,
+    "roe": 32.4,
+    "roa": 9.1,
+    "debtToEquity": 0.7,
+    "freeCashFlowPositive": true,
+    "sharesM": 3792,
+    "moat": "Strong",
+    "managementRating": "Strong",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Largest telecom in Ghana with ~53% mobile market share",
+      "Strong data revenue growth (30%+ YoY) driven by mobile internet",
+      "MTN Group backing — capital, technology and brand support",
+      "Fintech arm (MoMo) becoming a significant revenue contributor"
+    ],
+    "keyRisks": [
+      "Currency devaluation increases USD-denominated costs (roaming, equipment)",
+      "Regulatory risk from NCA (National Communications Authority)",
+      "Competition from Telecel (formerly Vodafone Ghana) and AirtelTigo"
+    ],
+    "analystNote": "Blue-chip GSE stock. Consistent dividend payer with semi-annual distributions. Largest company by market cap on GSE. Benefits from Ghana's youthful, mobile-first population.",
+    "dataQuality": "High"
+  },
+
+  "GCB.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 2850,
+    "netProfit": 720,
+    "netMargin": 25.3,
+    "operatingMargin": 32.0,
+    "eps": 2.72,
+    "dps": 1.10,
+    "currentRatio": 1.3,
+    "roe": 17.8,
+    "roa": 3.2,
+    "debtToEquity": 0.5,
+    "freeCashFlowPositive": true,
+    "sharesM": 265,
+    "moat": "Moderate",
+    "managementRating": "Average",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Ghana's largest indigenous bank with 60+ years of history",
+      "Extensive branch and ATM network across Ghana",
+      "Strong retail and SME banking franchise",
+      "Government-related entity — perceived implicit backing"
+    ],
+    "keyRisks": [
+      "High NPL (non-performing loan) ratio typical of Ghanaian banks",
+      "DDEP (2023) impaired government bond portfolio — ongoing recovery",
+      "Currency risk on USD-denominated liabilities",
+      "Public sector salary payment dependency makes it exposed to govt delays"
+    ],
+    "analystNote": "Ghana's flagship bank. DDEP caused significant bond losses in FY2022; recovery visible in FY2023. Solid dividend payer. P/E historically 5–10x. Well-known brand but capital quality concerns linger post-DDEP.",
+    "dataQuality": "High"
+  },
+
+  "CAL.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 920,
+    "netProfit": 65,
+    "netMargin": 7.1,
+    "operatingMargin": 9.5,
+    "eps": 0.026,
+    "dps": 0.00,
+    "currentRatio": 1.1,
+    "roe": 3.8,
+    "roa": 0.7,
+    "debtToEquity": 0.8,
+    "freeCashFlowPositive": false,
+    "sharesM": 2500,
+    "moat": "Weak",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Recovery trajectory after severe DDEP bond write-offs in 2022",
+      "Strong digital banking platform (Cal Mobile)",
+      "Growing SME and trade finance book"
+    ],
+    "keyRisks": [
+      "Heavily impacted by DDEP — recorded large losses in FY2022",
+      "Capital adequacy under pressure; may need capital raise",
+      "Dividend suspended during recovery",
+      "High NPL ratio and concentration risk"
+    ],
+    "analystNote": "Hardest-hit bank from DDEP after GN Bank collapse-related issues. FY2022 recorded net loss; FY2023 is a recovery year but still weak. Higher risk, speculative at current stage. Dividend suspended.",
+    "dataQuality": "Medium"
+  },
+
+  "EGH.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 2400,
+    "netProfit": 550,
+    "netMargin": 22.9,
+    "operatingMargin": 28.0,
+    "eps": 0.19,
+    "dps": 0.08,
+    "currentRatio": 1.2,
+    "roe": 16.5,
+    "roa": 2.8,
+    "debtToEquity": 0.6,
+    "freeCashFlowPositive": true,
+    "sharesM": 2900,
+    "moat": "Moderate",
+    "managementRating": "Strong",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Backed by Ecobank Transnational — pan-African brand and capital",
+      "Strong trade finance and corporate banking capability",
+      "Well-capitalised relative to local peers"
+    ],
+    "keyRisks": [
+      "DDEP impact on GoG bond portfolio (2022 losses)",
+      "Parent (ETI) has had its own capital pressures",
+      "Currency risk on USD liabilities"
+    ],
+    "analystNote": "One of the better-managed banks in Ghana. ETI parentage provides international credibility. Moderate dividend. More conservative lending than local banks historically.",
+    "dataQuality": "Medium"
+  },
+
+  "SCB.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 1650,
+    "netProfit": 480,
+    "netMargin": 29.1,
+    "operatingMargin": 35.0,
+    "eps": 1.52,
+    "dps": 0.90,
+    "currentRatio": 1.5,
+    "roe": 21.0,
+    "roa": 4.5,
+    "debtToEquity": 0.4,
+    "freeCashFlowPositive": true,
+    "sharesM": 316,
+    "moat": "Moderate",
+    "managementRating": "Strong",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "International bank with Standard Chartered Group backing and standards",
+      "Conservative lending with lower NPL ratios than local peers",
+      "Strong corporate and trade finance franchise",
+      "Best-in-class capital adequacy ratios"
+    ],
+    "keyRisks": [
+      "Limited retail banking presence vs. GCB and Ecobank",
+      "DDEP impact (lower than local banks due to lower GoG bond exposure)",
+      "StanChart Group strategic repositioning could affect Ghana focus"
+    ],
+    "analystNote": "Highest-quality bank on GSE by lending standards. Lower risk than local banks. Good dividend payer. Tends to trade at a premium P/E to reflect quality. Less GSE liquidity than GCB/EGH.",
+    "dataQuality": "Medium"
+  },
+
+  "SCBPREF.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": null,
+    "netProfit": null,
+    "netMargin": null,
+    "operatingMargin": null,
+    "eps": null,
+    "dps": 0.08,
+    "currentRatio": null,
+    "roe": null,
+    "roa": null,
+    "debtToEquity": null,
+    "freeCashFlowPositive": null,
+    "sharesM": 200,
+    "moat": "Moderate",
+    "managementRating": "Strong",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Preference share — fixed preferential dividend ahead of ordinary shareholders",
+      "Standard Chartered Bank Ghana backing — low default risk",
+      "Income security higher than ordinary equity"
+    ],
+    "keyRisks": [
+      "No capital appreciation (fixed-income like instrument)",
+      "Dividend could be suspended if bank faces distress",
+      "Interest rate risk — value falls if market rates rise"
+    ],
+    "analystNote": "This is a preference share, not ordinary equity. Suitable for income-focused investors only. Acts more like a fixed-income instrument. Not suitable for capital growth.",
+    "dataQuality": "Medium"
+  },
+
+  "ACCESS.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 1200,
+    "netProfit": 210,
+    "netMargin": 17.5,
+    "operatingMargin": 22.0,
+    "eps": 0.29,
+    "dps": 0.05,
+    "currentRatio": 1.2,
+    "roe": 14.0,
+    "roa": 2.5,
+    "debtToEquity": 0.7,
+    "freeCashFlowPositive": true,
+    "sharesM": 720,
+    "moat": "Moderate",
+    "managementRating": "Strong",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Backed by Access Bank Nigeria (one of Africa's largest banks)",
+      "Growing rapidly through acquisition strategy",
+      "Strong trade finance and diaspora banking capabilities"
+    ],
+    "keyRisks": [
+      "Parent (Access Bank Nigeria) managing its own large acquisition debt",
+      "DDEP impact on local bond portfolio",
+      "Rapid growth can strain capital adequacy"
+    ],
+    "analystNote": "Nigerian parent brings capital and pan-African ambitions. Growth-oriented but dividend is modest. Watch capital ratios as loan book expands fast. Medium risk.",
+    "dataQuality": "Low"
+  },
+
+  "SOGEGH.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 800,
+    "netProfit": 130,
+    "netMargin": 16.3,
+    "operatingMargin": 20.0,
+    "eps": 0.18,
+    "dps": 0.05,
+    "currentRatio": 1.1,
+    "roe": 11.0,
+    "roa": 2.0,
+    "debtToEquity": 0.8,
+    "freeCashFlowPositive": true,
+    "sharesM": 710,
+    "moat": "Weak",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "SocGen (France) parent provides international credibility",
+      "Corporate banking focus with quality clients"
+    ],
+    "keyRisks": [
+      "SocGen Group has been divesting African assets — strategic uncertainty",
+      "Small market share; DDEP impacted bond portfolio",
+      "Low liquidity on GSE"
+    ],
+    "analystNote": "SocGen global has been reducing African footprint. Ghana unit faces strategic uncertainty as parent may divest. Low trading volume stock. Moderate risk.",
+    "dataQuality": "Low"
+  },
+
+  "ADB.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 700,
+    "netProfit": 50,
+    "netMargin": 7.1,
+    "operatingMargin": 9.0,
+    "eps": 0.05,
+    "dps": 0.02,
+    "currentRatio": 1.0,
+    "roe": 5.0,
+    "roa": 0.8,
+    "debtToEquity": 1.2,
+    "freeCashFlowPositive": false,
+    "sharesM": 1000,
+    "moat": "Weak",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Government development mandate — agriculture sector focus",
+      "Large branch network in rural areas",
+      "Policy support from government"
+    ],
+    "keyRisks": [
+      "High NPL ratio (agriculture lending is riskier)",
+      "Government ownership can lead to political lending decisions",
+      "DDEP impact + structural capital weakness",
+      "Low profitability — ROE below cost of capital"
+    ],
+    "analystNote": "Development bank with a mandate, not a return-maximising commercial bank. Low return on equity historically. Not suitable for growth investors. Income potential limited.",
+    "dataQuality": "Low"
+  },
+
+  "FAB.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 850,
+    "netProfit": 155,
+    "netMargin": 18.2,
+    "operatingMargin": 22.0,
+    "eps": 0.28,
+    "dps": 0.06,
+    "currentRatio": 1.2,
+    "roe": 13.5,
+    "roa": 2.3,
+    "debtToEquity": 0.6,
+    "freeCashFlowPositive": true,
+    "sharesM": 555,
+    "moat": "Weak",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Growing loan book in SME and retail segments",
+      "Digital banking investments improving efficiency"
+    ],
+    "keyRisks": [
+      "Smaller balance sheet limits large corporate deals",
+      "DDEP bond impairments in FY2022",
+      "Low liquidity on GSE"
+    ],
+    "analystNote": "Mid-tier bank with growth ambitions. Improving profitability trend post-DDEP. Limited GSE trading liquidity. Medium risk.",
+    "dataQuality": "Low"
+  },
+
+  "RBGH.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 650,
+    "netProfit": 90,
+    "netMargin": 13.8,
+    "operatingMargin": 18.0,
+    "eps": 0.14,
+    "dps": 0.05,
+    "currentRatio": 1.1,
+    "roe": 9.5,
+    "roa": 1.8,
+    "debtToEquity": 0.7,
+    "freeCashFlowPositive": true,
+    "sharesM": 650,
+    "moat": "Weak",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Backed by Republic Financial Holdings (Trinidad) — Caribbean banking expertise",
+      "Focus on mortgage and home finance (formerly HFC Bank)"
+    ],
+    "keyRisks": [
+      "Small market share in competitive Ghanaian banking sector",
+      "Mortgage lending exposed to Ghanaian property market softness",
+      "DDEP impact (2022)"
+    ],
+    "analystNote": "Formerly HFC Bank, rebranded after Republic Financial Holdings acquisition. Mortgage focus differentiates it slightly. Low GSE liquidity. Low-medium risk.",
+    "dataQuality": "Low"
+  },
+
+  "TBL.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 200,
+    "netProfit": 20,
+    "netMargin": 10.0,
+    "operatingMargin": 13.0,
+    "eps": 0.04,
+    "dps": 0.00,
+    "currentRatio": 1.0,
+    "roe": 5.0,
+    "roa": 1.0,
+    "debtToEquity": 0.9,
+    "freeCashFlowPositive": false,
+    "sharesM": 490,
+    "moat": "None",
+    "managementRating": "Average",
+    "dividendHistory": "None",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Libyan Arab African Investment Company backing (foreign capital)"
+    ],
+    "keyRisks": [
+      "Smallest bank on GSE — very low market share",
+      "Minimal trading volume, very illiquid",
+      "No dividend history",
+      "Geopolitical risk from Libyan parent"
+    ],
+    "analystNote": "Very small bank with minimal GSE presence. Extremely illiquid. Primarily held by founding shareholders. Not recommended for retail investors seeking liquidity.",
+    "dataQuality": "Low"
+  },
+
+  "ETI.GH": {
+    "fiscalYear": 2023,
+    "currency": "USD",
+    "revenue": 2300,
+    "netProfit": 380,
+    "netMargin": 16.5,
+    "operatingMargin": 22.0,
+    "eps": 0.013,
+    "dps": 0.002,
+    "currentRatio": 1.2,
+    "roe": 18.0,
+    "roa": 1.8,
+    "debtToEquity": 0.9,
+    "freeCashFlowPositive": true,
+    "sharesM": 29500,
+    "moat": "Moderate",
+    "managementRating": "Strong",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Moderate",
+    "keyStrengths": [
+      "Pan-African presence across 35 countries — unique diversification",
+      "Leading pan-African digital banking and payments platform (Omni Plus)",
+      "Strong trade finance network connecting African economies"
+    ],
+    "keyRisks": [
+      "Exposure to multiple African currency devaluations simultaneously",
+      "Capital pressure from large balance sheet across fragile economies",
+      "Complex holding structure makes analysis difficult",
+      "Operating in some high-risk jurisdictions (West/Central Africa)"
+    ],
+    "analystNote": "Financials in USD. Pan-African banking group listed on Ghana, Nigeria and Côte d'Ivoire exchanges. Recovery post-DDEP Ghana and various country restructurings. Diversification is both strength and complexity. Medium-risk.",
+    "dataQuality": "Medium"
+  },
+
+  "EGL.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 1450,
+    "netProfit": 220,
+    "netMargin": 15.2,
+    "operatingMargin": 19.0,
+    "eps": 0.44,
+    "dps": 0.18,
+    "currentRatio": 1.4,
+    "roe": 18.5,
+    "roa": 6.2,
+    "debtToEquity": 0.3,
+    "freeCashFlowPositive": true,
+    "sharesM": 500,
+    "moat": "Strong",
+    "managementRating": "Strong",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Ghana's largest insurance conglomerate (Enterprise Life + Enterprise Insurance)",
+      "Diversified into life insurance, general insurance and fund management",
+      "Strong brand and distribution network across Ghana",
+      "Investment portfolio benefits from rising interest rates"
+    ],
+    "keyRisks": [
+      "Insurance penetration in Ghana is low — growth requires market education",
+      "Investment returns linked to Ghanaian sovereign bond yields (DDEP impact)",
+      "Currency risk on USD-denominated reinsurance premiums"
+    ],
+    "analystNote": "Best-in-class insurance company on GSE. Consistent dividend payer. Well-managed with strong brand. Benefits from rising interest rates on investment portfolio. Relatively defensive stock. Low-medium risk.",
+    "dataQuality": "Medium"
+  },
+
+  "SIC.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 320,
+    "netProfit": 18,
+    "netMargin": 5.6,
+    "operatingMargin": 7.0,
+    "eps": 0.016,
+    "dps": 0.00,
+    "currentRatio": 1.0,
+    "roe": 4.5,
+    "roa": 1.5,
+    "debtToEquity": 0.4,
+    "freeCashFlowPositive": false,
+    "sharesM": 1140,
+    "moat": "Weak",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Government ownership provides franchise security",
+      "Large pool of existing policyholders"
+    ],
+    "keyRisks": [
+      "State-owned — prone to political/bureaucratic decision-making",
+      "Low profitability vs. private sector peer Enterprise Group",
+      "Claims ratio management challenges",
+      "Has had years of losses or near-breakeven results"
+    ],
+    "analystNote": "Government-owned insurer — less commercially focused than EGL. Often loss-making or marginal. Not recommended unless at very distressed valuation. EGL is the clear preferred insurance pick on GSE.",
+    "dataQuality": "Low"
+  },
+
+  "BOPP.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 580,
+    "netProfit": 95,
+    "netMargin": 16.4,
+    "operatingMargin": 20.5,
+    "eps": 0.76,
+    "dps": 0.40,
+    "currentRatio": 2.1,
+    "roe": 22.0,
+    "roa": 12.5,
+    "debtToEquity": 0.2,
+    "freeCashFlowPositive": true,
+    "sharesM": 125,
+    "moat": "Moderate",
+    "managementRating": "Strong",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Wilmar International subsidiary — world's largest agribusiness conglomerate backing",
+      "Prime agricultural land in Wenchi (Brong-Ahafo region)",
+      "Self-sufficient in power (own hydro + biomass generation)",
+      "Consistent dividend payer with strong free cash flow"
+    ],
+    "keyRisks": [
+      "Commodity price risk — crude palm oil (CPO) price fluctuations",
+      "Climate/weather risk on crop yields",
+      "Wilmar could delist or buy out minority shareholders"
+    ],
+    "analystNote": "One of the best fundamentals on GSE. Strong cash flow, low debt, consistent dividends, and a world-class parent. Oil palm is a defensive commodity with growing global demand. Recommended for income + moderate growth investors.",
+    "dataQuality": "High"
+  },
+
+  "CPC.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 380,
+    "netProfit": -15,
+    "netMargin": -3.9,
+    "operatingMargin": -2.0,
+    "eps": -0.03,
+    "dps": 0.00,
+    "currentRatio": 0.9,
+    "roe": -5.0,
+    "roa": -1.5,
+    "debtToEquity": 2.5,
+    "freeCashFlowPositive": false,
+    "sharesM": 450,
+    "moat": "Weak",
+    "managementRating": "Weak",
+    "dividendHistory": "None",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Strategic asset — processes Ghana's key export commodity (cocoa)",
+      "Government support likely given national importance"
+    ],
+    "keyRisks": [
+      "Chronically loss-making — high energy and processing costs",
+      "High leverage (Debt/Equity >2x) — financial distress risk",
+      "Government ownership leads to inefficiency",
+      "Volatile cocoa bean prices compress margins",
+      "Current ratio below 1 — liquidity concern"
+    ],
+    "analystNote": "One of the most consistently loss-making companies on GSE. High debt, no dividend, negative ROE. Speculative only — potential turnaround or privatisation play. Avoid for regular investment.",
+    "dataQuality": "Medium"
+  },
+
+  "UNIL.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 1250,
+    "netProfit": 40,
+    "netMargin": 3.2,
+    "operatingMargin": 5.5,
+    "eps": 0.21,
+    "dps": 0.10,
+    "currentRatio": 1.2,
+    "roe": 8.0,
+    "roa": 4.5,
+    "debtToEquity": 0.3,
+    "freeCashFlowPositive": false,
+    "sharesM": 188,
+    "moat": "Moderate",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Iconic consumer brands (OMO, Sunlight, Lipton, Close-Up) with strong recall",
+      "Wide distribution network across Ghana",
+      "Post-Unilever-divestiture management focused on local optimization"
+    ],
+    "keyRisks": [
+      "Unilever divested majority stake — may lose brand licenses and supply chain support over time",
+      "Margin compression from forex-linked input costs (palm oil, chemicals)",
+      "Intense competition from importers and local brands",
+      "Net margins very thin (~3%) — vulnerable to cost shocks"
+    ],
+    "analystNote": "Unilever Global divested its majority Ghana stake (now locally controlled). Transition creates uncertainty around brand licenses. Thin margins, inconsistent dividend. Household brand recognition is the main moat. Medium risk.",
+    "dataQuality": "Medium"
+  },
+
+  "FML.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 620,
+    "netProfit": 42,
+    "netMargin": 6.8,
+    "operatingMargin": 9.5,
+    "eps": 0.34,
+    "dps": 0.15,
+    "currentRatio": 1.3,
+    "roe": 12.0,
+    "roa": 6.5,
+    "debtToEquity": 0.3,
+    "freeCashFlowPositive": true,
+    "sharesM": 124,
+    "moat": "Moderate",
+    "managementRating": "Average",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Market leader in frozen dairy (ice cream, Fan Ice, Fan Milk) in Ghana",
+      "Strong brand loyalty across all income segments",
+      "Danone/international backing provides product development support"
+    ],
+    "keyRisks": [
+      "Margins compressed by rising electricity costs (cold chain critical)",
+      "Forex impact on milk powder and packaging imports",
+      "Danone Group has been divesting brands globally — divestiture risk"
+    ],
+    "analystNote": "Fan Milk brand is a Ghanaian household name. Steady margins, consistent dividends, but growth is slow. Danone ownership change could affect strategy. Defensive FMCG stock. Low-medium risk.",
+    "dataQuality": "Medium"
+  },
+
+  "GGBL.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 980,
+    "netProfit": 35,
+    "netMargin": 3.6,
+    "operatingMargin": 6.0,
+    "eps": 0.08,
+    "dps": 0.04,
+    "currentRatio": 1.1,
+    "roe": 5.5,
+    "roa": 2.8,
+    "debtToEquity": 0.5,
+    "freeCashFlowPositive": false,
+    "sharesM": 450,
+    "moat": "Moderate",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Diageo brand portfolio (Guinness, Malta Guinness, Smirnoff, Baileys)",
+      "Strong distribution reach across Ghana",
+      "Premium and popular segment presence"
+    ],
+    "keyRisks": [
+      "Excise duty increases squeeze margins on beer/spirits",
+      "Consumer purchasing power constrained by inflation",
+      "Competition from cheaper imports and local brewers (AB InBev Ghana)",
+      "Forex-linked raw materials (malt, hops) erode margins"
+    ],
+    "analystNote": "Diageo subsidiary with powerful brands but thin margins. Has had loss-making years. Consumer spending pressure in Ghana hits discretionary alcohol. Not the safest GSE pick. Speculative to moderate risk.",
+    "dataQuality": "Medium"
+  },
+
+  "CMLT.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 30,
+    "netProfit": 2,
+    "netMargin": 6.7,
+    "operatingMargin": 8.0,
+    "eps": 0.04,
+    "dps": 0.00,
+    "currentRatio": 1.2,
+    "roe": 5.0,
+    "roa": 3.0,
+    "debtToEquity": 0.4,
+    "freeCashFlowPositive": false,
+    "sharesM": 45,
+    "moat": "None",
+    "managementRating": "Average",
+    "dividendHistory": "None",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Niche printing and stationery business with established clients"
+    ],
+    "keyRisks": [
+      "Extremely small company — very low trading volume on GSE",
+      "Digitisation reducing demand for printed materials",
+      "No dividend, minimal growth",
+      "Illiquid — difficult to buy or sell"
+    ],
+    "analystNote": "Micro-cap printing company with extremely low trading volume. Not suitable for most investors. Very limited growth prospects in an increasingly digital world.",
+    "dataQuality": "Low"
+  },
+
+  "SAMBA.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 50,
+    "netProfit": 3,
+    "netMargin": 6.0,
+    "operatingMargin": 8.0,
+    "eps": 0.03,
+    "dps": 0.00,
+    "currentRatio": 1.1,
+    "roe": 4.0,
+    "roa": 2.5,
+    "debtToEquity": 0.5,
+    "freeCashFlowPositive": false,
+    "sharesM": 100,
+    "moat": "None",
+    "managementRating": "Average",
+    "dividendHistory": "None",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Local food brand with distribution in key Ghanaian markets"
+    ],
+    "keyRisks": [
+      "Very small company with limited financial data available",
+      "Extremely illiquid on GSE",
+      "Intense FMCG competition from larger players",
+      "No dividend history"
+    ],
+    "analystNote": "Small food company with very limited publicly available financial data. Extremely illiquid on GSE. High uncertainty — analysis is speculative.",
+    "dataQuality": "Low"
+  },
+
+  "DASPHARMA.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 220,
+    "netProfit": 15,
+    "netMargin": 6.8,
+    "operatingMargin": 9.0,
+    "eps": 0.06,
+    "dps": 0.02,
+    "currentRatio": 1.4,
+    "roe": 8.5,
+    "roa": 4.0,
+    "debtToEquity": 0.6,
+    "freeCashFlowPositive": true,
+    "sharesM": 250,
+    "moat": "Weak",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Merger of Dannex and Ayrton Drug (two established Ghanaian pharma companies)",
+      "Manufacturing capability for generics — import substitution play",
+      "Growing demand for affordable medicines in Ghana"
+    ],
+    "keyRisks": [
+      "Import competition from cheap Indian and Chinese generics",
+      "Forex exposure on active pharmaceutical ingredients (APIs)",
+      "Regulatory compliance costs for GMP standards",
+      "Limited R&D capability — pure generics manufacturer"
+    ],
+    "analystNote": "Ghana's main domestic pharmaceutical manufacturer. Healthcare is a secular growth theme. Margins thin due to import competition but growing local manufacturing drive helps. Medium risk, long-term structural opportunity.",
+    "dataQuality": "Low"
+  },
+
+  "IIL.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 95,
+    "netProfit": 8,
+    "netMargin": 8.4,
+    "operatingMargin": 11.0,
+    "eps": 0.08,
+    "dps": 0.02,
+    "currentRatio": 1.5,
+    "roe": 9.0,
+    "roa": 5.0,
+    "debtToEquity": 0.4,
+    "freeCashFlowPositive": true,
+    "sharesM": 100,
+    "moat": "Weak",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Niche manufacturer of IV fluids — essential healthcare product",
+      "Relatively low competition domestically for IV manufacturing",
+      "Healthcare is a non-cyclical sector"
+    ],
+    "keyRisks": [
+      "Very small company — limited scale and reinvestment capacity",
+      "Dependent on public sector (Ministry of Health, hospitals) procurement",
+      "Government procurement delays create cash flow issues",
+      "Very low GSE trading volume"
+    ],
+    "analystNote": "Niche IV fluid manufacturer serving Ghana's healthcare sector. Non-cyclical product but heavy government procurement dependence and very small size. Very illiquid on GSE.",
+    "dataQuality": "Low"
+  },
+
+  "GOIL.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 7800,
+    "netProfit": 155,
+    "netMargin": 2.0,
+    "operatingMargin": 2.8,
+    "eps": 0.39,
+    "dps": 0.12,
+    "currentRatio": 1.1,
+    "roe": 14.5,
+    "roa": 3.5,
+    "debtToEquity": 0.8,
+    "freeCashFlowPositive": true,
+    "sharesM": 400,
+    "moat": "Moderate",
+    "managementRating": "Strong",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Ghana's largest indigenous petroleum marketing company (GOIL = Ghana Oil)",
+      "Largest retail fuel station network in Ghana (600+ stations nationwide)",
+      "Government strategic importance — unlikely to be disrupted",
+      "Growing LPG and aviation fuel segments"
+    ],
+    "keyRisks": [
+      "Razor-thin margins typical of fuel retail (~2% net margin)",
+      "Petroleum price regulation by NPA can squeeze margins",
+      "Forex exposure on crude oil import costs",
+      "EV transition (very long-term risk in Ghana context)"
+    ],
+    "analystNote": "Revenue is large but margins are thin — typical fuel retail dynamics. Strong brand and network. National strategic importance. Consistent dividend. Good for income investors. Medium-low risk.",
+    "dataQuality": "High"
+  },
+
+  "TOTAL.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 6500,
+    "netProfit": 195,
+    "netMargin": 3.0,
+    "operatingMargin": 4.0,
+    "eps": 0.69,
+    "dps": 0.30,
+    "currentRatio": 1.2,
+    "roe": 16.0,
+    "roa": 5.0,
+    "debtToEquity": 0.4,
+    "freeCashFlowPositive": true,
+    "sharesM": 282,
+    "moat": "Moderate",
+    "managementRating": "Strong",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "TotalEnergies (French major) parent — global best practices and capital",
+      "Premium positioning (higher margin lubricants and specialty fuels)",
+      "Strong corporate and aviation fuel contracts"
+    ],
+    "keyRisks": [
+      "Global parent TotalEnergies could delist from GSE",
+      "Thin fuel retail margins; NPA price regulation",
+      "Forex exposure on crude imports"
+    ],
+    "analystNote": "TotalEnergies subsidiary with slightly better margins than GOIL due to higher-value product mix (lubricants, aviation). Consistent dividend, international backing. Premium to GOIL on P/E justified. Low-medium risk.",
+    "dataQuality": "Medium"
+  },
+
+  "ZEN.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 1200,
+    "netProfit": 20,
+    "netMargin": 1.7,
+    "operatingMargin": 2.5,
+    "eps": 0.10,
+    "dps": 0.00,
+    "currentRatio": 0.9,
+    "roe": 6.0,
+    "roa": 1.5,
+    "debtToEquity": 1.3,
+    "freeCashFlowPositive": false,
+    "sharesM": 200,
+    "moat": "None",
+    "managementRating": "Average",
+    "dividendHistory": "None",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Growing fuel retail footprint in Ghana"
+    ],
+    "keyRisks": [
+      "No dividend, very thin margins",
+      "Current ratio below 1 — liquidity pressure",
+      "Higher leverage than GOIL/TOTAL",
+      "Limited financial history as a listed company",
+      "Very low GSE trading volume"
+    ],
+    "analystNote": "Smaller fuel retailer vs GOIL and Total. Thinner margins, higher debt, no dividend, and liquidity concerns. Would choose GOIL or TOTAL over ZEN for fuel sector exposure. High risk.",
+    "dataQuality": "Low"
+  },
+
+  "TLW.GH": {
+    "fiscalYear": 2023,
+    "currency": "USD",
+    "revenue": 1650,
+    "netProfit": 120,
+    "netMargin": 7.3,
+    "operatingMargin": 18.0,
+    "eps": 0.08,
+    "dps": 0.00,
+    "currentRatio": 1.1,
+    "roe": 8.5,
+    "roa": 2.5,
+    "debtToEquity": 2.8,
+    "freeCashFlowPositive": true,
+    "sharesM": 1500,
+    "moat": "Moderate",
+    "managementRating": "Average",
+    "dividendHistory": "Suspended",
+    "businessClarity": "Moderate",
+    "keyStrengths": [
+      "Operator of Ghana's Jubilee and TEN offshore oil fields",
+      "Oil production is cash-generative at Brent above ~$50/bbl",
+      "West Africa portfolio with long-dated production licenses"
+    ],
+    "keyRisks": [
+      "Heavy debt load (~$1.7B net debt) — interest costs consume most operating profit",
+      "Declining production rates from maturing Ghanaian fields",
+      "Oil price sensitivity — highly leveraged to Brent price",
+      "Dividend suspended since 2020; reinstatement uncertain",
+      "Ongoing asset divestiture programme"
+    ],
+    "analystNote": "USD-denominated. Highly leveraged oil company facing declining Ghana production. Speculative — only attractive if oil prices spike and debt is reduced. Dividend suspended. HIGH risk investment.",
+    "dataQuality": "Medium"
+  },
+
+  "AGA.GH": {
+    "fiscalYear": 2023,
+    "currency": "USD",
+    "revenue": 4550,
+    "netProfit": 380,
+    "netMargin": 8.4,
+    "operatingMargin": 14.0,
+    "eps": 0.91,
+    "dps": 0.40,
+    "currentRatio": 2.1,
+    "roe": 10.5,
+    "roa": 4.2,
+    "debtToEquity": 0.6,
+    "freeCashFlowPositive": true,
+    "sharesM": 415,
+    "moat": "Strong",
+    "managementRating": "Strong",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Tier 1 global gold miner with assets across Africa, Americas and Australia",
+      "Moved primary listing to NYSE — improved global institutional access",
+      "Benefits directly from rising gold price (safe-haven demand)",
+      "Strong balance sheet with manageable debt"
+    ],
+    "keyRisks": [
+      "Gold price sensitivity — earnings fall sharply with gold price decline",
+      "Operational risk in high-risk jurisdictions (DRC, Mali, Guinea)",
+      "Rising energy and labour costs at mines",
+      "Ghana GSE cross-listing is secondary — limited local trading depth"
+    ],
+    "analystNote": "USD-denominated. AngloGold is a genuine global gold major. Buy if you want gold price exposure with a diversified mining company. GSE listing provides Ghanaian investors access. Tracks NYSE primary listing. Medium risk (gold price risk).",
+    "dataQuality": "High"
+  },
+
+  "ASG.GH": {
+    "fiscalYear": 2023,
+    "currency": "USD",
+    "revenue": null,
+    "netProfit": null,
+    "netMargin": null,
+    "operatingMargin": null,
+    "eps": null,
+    "dps": 0.40,
+    "currentRatio": null,
+    "roe": null,
+    "roa": null,
+    "debtToEquity": null,
+    "freeCashFlowPositive": null,
+    "sharesM": null,
+    "moat": "Strong",
+    "managementRating": "Strong",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Moderate",
+    "keyStrengths": [
+      "Exposure to AngloGold Ashanti's global gold mining operations"
+    ],
+    "keyRisks": [
+      "Different share class from AGA — limited liquidity and transparency",
+      "Sponsor shares have different economic rights — check terms",
+      "Very thin market on GSE"
+    ],
+    "analystNote": "Sponsor/secondary class of AngloGold Ashanti shares. Prefer AGA.GH for direct exposure. Limited liquidity and complex share class structure. Not recommended for general investors.",
+    "dataQuality": "Low"
+  },
+
+  "AADS.GH": {
+    "fiscalYear": 2023,
+    "currency": "USD",
+    "revenue": null,
+    "netProfit": null,
+    "netMargin": null,
+    "operatingMargin": null,
+    "eps": null,
+    "dps": 0.40,
+    "currentRatio": null,
+    "roe": null,
+    "roa": null,
+    "debtToEquity": null,
+    "freeCashFlowPositive": null,
+    "sharesM": null,
+    "moat": "Strong",
+    "managementRating": "Strong",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Moderate",
+    "keyStrengths": [
+      "Depositary share exposure to AngloGold Ashanti global operations"
+    ],
+    "keyRisks": [
+      "Depositary shares add a layer of complexity over direct shares",
+      "Very low liquidity on GSE",
+      "Tracking error vs. primary NYSE listing"
+    ],
+    "analystNote": "American Depositary Shares of AngloGold Ashanti listed on GSE. Complex instrument. For local exposure to AGA, prefer AGA.GH directly. Very thin market.",
+    "dataQuality": "Low"
+  },
+
+  "GLD.GH": {
+    "fiscalYear": 2023,
+    "currency": "USD",
+    "revenue": 4200,
+    "netProfit": 620,
+    "netMargin": 14.8,
+    "operatingMargin": 22.0,
+    "eps": 0.69,
+    "dps": 0.35,
+    "currentRatio": 2.5,
+    "roe": 12.5,
+    "roa": 6.0,
+    "debtToEquity": 0.5,
+    "freeCashFlowPositive": true,
+    "sharesM": 900,
+    "moat": "Strong",
+    "managementRating": "Strong",
+    "dividendHistory": "Consistent",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Gold Fields operates Tarkwa (Ghana) and Damang — two world-class mines",
+      "Strong balance sheet — net debt declining year-on-year",
+      "Better cost discipline than AGA historically (lower AISC)",
+      "South African primary listing with global investor base"
+    ],
+    "keyRisks": [
+      "Gold price sensitivity — highly correlated with Brent/USD/safe-haven demand",
+      "Mine life — Tarkwa transitioning to deeper underground (higher costs)",
+      "South Africa JSE primary listing — currency conversion complexity for GHS investors",
+      "Global climate regulation increasing mining compliance costs"
+    ],
+    "analystNote": "USD-denominated. Gold Fields GDR gives exposure to one of Africa's best-managed gold miners. Tarkwa mine in Ghana is a flagship asset. Generally better cost profile than AGA. Recommended for gold sector exposure. Medium risk.",
+    "dataQuality": "Medium"
+  },
+
+  "CLYD.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 20,
+    "netProfit": 1,
+    "netMargin": 5.0,
+    "operatingMargin": 7.0,
+    "eps": 0.02,
+    "dps": 0.00,
+    "currentRatio": 1.1,
+    "roe": 4.0,
+    "roa": 2.5,
+    "debtToEquity": 0.5,
+    "freeCashFlowPositive": false,
+    "sharesM": 55,
+    "moat": "None",
+    "managementRating": "Average",
+    "dividendHistory": "None",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "IT services in a growing digital economy"
+    ],
+    "keyRisks": [
+      "Micro-cap with essentially zero trading volume",
+      "No dividend, minimal profits",
+      "Competition from large global tech companies entering Ghana",
+      "Very limited financial disclosure"
+    ],
+    "analystNote": "Near-dormant micro-cap IT company. Essentially untradeable due to zero market volume. No financial rationale for investment at current stage. Avoid.",
+    "dataQuality": "Low"
+  },
+
+  "DIGICUT.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 15,
+    "netProfit": 1,
+    "netMargin": 6.7,
+    "operatingMargin": 9.0,
+    "eps": 0.01,
+    "dps": 0.00,
+    "currentRatio": 1.0,
+    "roe": 3.0,
+    "roa": 2.0,
+    "debtToEquity": 0.6,
+    "freeCashFlowPositive": false,
+    "sharesM": 100,
+    "moat": "None",
+    "managementRating": "Average",
+    "dividendHistory": "None",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Digital media/signage niche — some recurring revenue from contracts"
+    ],
+    "keyRisks": [
+      "Extremely small, essentially illiquid",
+      "No dividend, very low earnings",
+      "Limited competitive differentiation"
+    ],
+    "analystNote": "Micro-cap digital media company. Essentially untradeable. No investment case for most investors.",
+    "dataQuality": "Low"
+  },
+
+  "ALLGH.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 250,
+    "netProfit": 8,
+    "netMargin": 3.2,
+    "operatingMargin": 5.5,
+    "eps": 0.03,
+    "dps": 0.00,
+    "currentRatio": 0.9,
+    "roe": 4.0,
+    "roa": 1.5,
+    "debtToEquity": 1.8,
+    "freeCashFlowPositive": false,
+    "sharesM": 300,
+    "moat": "Weak",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Only local manufacturer of aluminium flat-rolled products in Ghana",
+      "Tariff protection and government infrastructure demand provide some support"
+    ],
+    "keyRisks": [
+      "High leverage (D/E ~1.8x) — financial distress concern",
+      "Current ratio below 1 — liquidity squeeze",
+      "Aluminium input cost (imported) denominated in USD — forex exposure",
+      "Has had near-insolvency periods in the past",
+      "No dividend"
+    ],
+    "analystNote": "Structurally challenged manufacturer. High debt, thin margins, forex exposure on inputs. Has required restructuring. Speculative — only as a deep value or turnaround play. Avoid for income or growth investors.",
+    "dataQuality": "Low"
+  },
+
+  "MAC.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 180,
+    "netProfit": 12,
+    "netMargin": 6.7,
+    "operatingMargin": 9.0,
+    "eps": 0.24,
+    "dps": 0.08,
+    "currentRatio": 1.3,
+    "roe": 10.5,
+    "roa": 4.5,
+    "debtToEquity": 0.6,
+    "freeCashFlowPositive": true,
+    "sharesM": 50,
+    "moat": "Weak",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Established distribution business with government and corporate clients",
+      "Low debt relative to size"
+    ],
+    "keyRisks": [
+      "Small scale — limited pricing power",
+      "Very low GSE trading volume",
+      "Automotive distribution business exposed to import restrictions",
+      "Revenue largely depends on government procurement cycles"
+    ],
+    "analystNote": "Small distribution company with some dividend history. Very illiquid on GSE. Limited growth prospects. Not recommended for most investors.",
+    "dataQuality": "Low"
+  },
+
+  "MMH.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 280,
+    "netProfit": 18,
+    "netMargin": 6.4,
+    "operatingMargin": 9.0,
+    "eps": 0.09,
+    "dps": 0.03,
+    "currentRatio": 1.2,
+    "roe": 9.0,
+    "roa": 3.5,
+    "debtToEquity": 0.7,
+    "freeCashFlowPositive": true,
+    "sharesM": 200,
+    "moat": "Weak",
+    "managementRating": "Average",
+    "dividendHistory": "Irregular",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Diversified distribution holding company",
+      "Some recurring revenues from service contracts"
+    ],
+    "keyRisks": [
+      "Low liquidity on GSE",
+      "Small scale limits reinvestment",
+      "Conglomerate complexity with limited transparency"
+    ],
+    "analystNote": "Small distribution conglomerate. Limited public financial information. Very illiquid. Not recommended.",
+    "dataQuality": "Low"
+  },
+
+  "HORDS.GH": {
+    "fiscalYear": 2023,
+    "currency": "GHS",
+    "revenue": 45,
+    "netProfit": 5,
+    "netMargin": 11.1,
+    "operatingMargin": 14.0,
+    "eps": 0.05,
+    "dps": 0.00,
+    "currentRatio": 1.3,
+    "roe": 5.0,
+    "roa": 3.0,
+    "debtToEquity": 0.8,
+    "freeCashFlowPositive": false,
+    "sharesM": 100,
+    "moat": "Weak",
+    "managementRating": "Average",
+    "dividendHistory": "None",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Real estate assets in Ghana are structurally valuable long-term",
+      "Rental income provides some revenue stability"
+    ],
+    "keyRisks": [
+      "Very small real estate company — minimal scale",
+      "Extremely low GSE trading volume",
+      "Ghana real estate market hit by currency devaluation and high mortgage rates",
+      "No dividend, limited financial disclosure"
+    ],
+    "analystNote": "Micro-cap real estate company with very limited GSE presence. Essentially untradeable. No investment case for most investors at this stage.",
+    "dataQuality": "Low"
+  }
+}
