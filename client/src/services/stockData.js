@@ -38,19 +38,18 @@ async function getGseStockData(ticker) {
   const prevClose = price != null && change != null ? price - change : null;
   const changePct = prevClose && prevClose !== 0 ? change / prevClose : null;
 
-  // True 52-week high/low from daily snapshots
-  const prices52W = snapshots.map(x => x.price).filter(Boolean);
-  if (price != null) prices52W.push(price);
-  const fiftyTwoWeekHigh = prices52W.length ? Math.max(...prices52W) : null;
-  const fiftyTwoWeekLow  = prices52W.length ? Math.min(...prices52W) : null;
+  // Use analytics for 52W range and year change (faster than scanning snapshots)
+  const analytics = histRes.success ? (histRes.data?.analytics || {}) : {};
 
-  // 1-year momentum: compare first snapshot price to current
-  const firstSnap    = snapshots[0];
-  const yearlyOpenPrice     = firstSnap?.price ?? null;
-  const yearlyChangePercent = yearlyOpenPrice && price
-    ? ((price - yearlyOpenPrice) / yearlyOpenPrice) * 100 : null;
+  const fiftyTwoWeekHigh = analytics.high ?? (snapshots.length ? Math.max(...snapshots.map(x => x.price).filter(Boolean)) : null);
+  const fiftyTwoWeekLow  = analytics.low  ?? (snapshots.length ? Math.min(...snapshots.map(x => x.price).filter(Boolean)) : null);
 
-  // 30-day momentum: last 30 snapshots
+  const yearlyOpenPrice     = analytics.open  ?? snapshots[0]?.price ?? null;
+  const yearlyChangePercent = analytics.priceChangePct != null
+    ? analytics.priceChangePct
+    : (yearlyOpenPrice && price ? ((price - yearlyOpenPrice) / yearlyOpenPrice) * 100 : null);
+
+  // 30-day momentum from last 30 snapshots
   const recent30 = snapshots.slice(-30);
   const recent30First = recent30[0]?.price ?? null;
   const momentum30Pct = recent30First && price

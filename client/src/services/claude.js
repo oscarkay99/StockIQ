@@ -1,5 +1,6 @@
 import { getClient } from './anthropic.js';
 import MARKETS from '../data/markets.json';
+import { fetchGseReportPdf } from './gseReports.js';
 
 function fmt(val, prefix = '', suffix = '', decimals = 2) {
   if (val == null) return 'N/A';
@@ -444,6 +445,9 @@ Output format:
   },
 };
 
+// Analysis types where a GSE annual report PDF adds the most value
+const PDF_ANALYSIS_TYPES = new Set(['fundamental', 'trade_signal', 'growth_dividend', 'risk']);
+
 export async function streamAnalysis(analysisType, stockData, extraContext, onChunk, signal) {
   const analysis = ANALYSES[analysisType];
   if (!analysis) throw new Error(`Unknown analysis type: ${analysisType}`);
@@ -451,10 +455,38 @@ export async function streamAnalysis(analysisType, stockData, extraContext, onCh
   const ctx = buildStockContext(stockData, extraContext);
   const prompt = analysis.buildPrompt(ctx);
 
+  // Try to attach a GSE financial report PDF for analysis types that benefit from it
+  let pdfData = null;
+  const ticker = stockData?.quote?.symbol || '';
+  const isGse = /\.GH$/i.test(ticker);
+  if (isGse && PDF_ANALYSIS_TYPES.has(analysisType) && !signal?.aborted) {
+    try {
+      const race = await Promise.race([
+        fetchGseReportPdf(ticker),
+        new Promise(r => setTimeout(r, 9000, null)),
+      ]);
+      pdfData = race;
+    } catch { /* proceed without PDF */ }
+  }
+
+  const messageContent = pdfData
+    ? [
+        {
+          type: 'document',
+          source: { type: 'base64', media_type: 'application/pdf', data: pdfData.base64 },
+          title: pdfData.title,
+        },
+        {
+          type: 'text',
+          text: `The document above is the company's most recent financial statement filed on the Ghana Stock Exchange (gse.com.gh).\n\n${prompt}`,
+        },
+      ]
+    : prompt;
+
   const stream = getClient().messages.stream({
     model: 'claude-sonnet-4-6',
     max_tokens: 900,
-    messages: [{ role: 'user', content: prompt }],
+    messages: [{ role: 'user', content: messageContent }],
   });
 
   if (signal) signal.addEventListener('abort', () => stream.abort());
