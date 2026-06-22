@@ -32,6 +32,7 @@ LIVE PRICE DATA (source: ${q.dataSource || 'live'}):
 - Previous Close: ${fmt(q.chartPreviousClose, cur + ' ')}
 - 52-Week High: ${fmt(q.fiftyTwoWeekHigh, cur + ' ')}  |  52-Week Low: ${fmt(q.fiftyTwoWeekLow, cur + ' ')}${rangePctStr ? `  (currently at ${rangePctStr})` : ''}
 ${q.yearlyChangePercent != null ? `- 1-Year Price Change: ${q.yearlyChangePercent >= 0 ? '+' : ''}${q.yearlyChangePercent.toFixed(2)}% (from ${cur} ${fmt(q.yearlyOpenPrice)} one year ago)` : ''}
+${q.momentum30Pct != null ? `- 30-Day Momentum: ${q.momentum30Pct >= 0 ? '+' : ''}${q.momentum30Pct.toFixed(2)}%` : ''}
 ${q.bidPrice != null ? `- Bid: ${cur} ${fmt(q.bidPrice)}  |  Ask: ${cur} ${fmt(q.askPrice)}` : ''}` : `
 NOTE: Live price data is not available for this ticker via the current data provider.`;
 

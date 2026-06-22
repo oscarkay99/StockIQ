@@ -16,45 +16,45 @@ function setCache(key, data) {
 
 const MULA_BASE = 'https://gse-service.mulatechnologies.com/api/v1';
 
-// Cache the yearly snapshot for all stocks (fetched once, shared across selections)
-let mulaYearlySnapshot = null;
-let mulaYearlyTs = 0;
-
-async function fetchMulaYearly() {
-  if (mulaYearlySnapshot && Date.now() - mulaYearlyTs < TTL) return mulaYearlySnapshot;
-  const url = `${MULA_BASE}/market/closing-prices?range=1y`;
-  const res = await fetch(PROXY + encodeURIComponent(url));
-  if (!res.ok) throw new Error(`Mula yearly HTTP ${res.status}`);
-  const json = await res.json();
-  mulaYearlySnapshot = json.data?.stocks || [];
-  mulaYearlyTs = Date.now();
-  return mulaYearlySnapshot;
-}
 
 async function getGseStockData(ticker) {
   const symbol = ticker.replace(/\.GH$/i, '');
 
-  // Fetch live stock detail and 1-year history in parallel
-  const [liveRes, yearlyStocks] = await Promise.all([
+  // Fetch live data and full 1-year daily history in parallel
+  const [liveRes, histRes] = await Promise.all([
     fetch(PROXY + encodeURIComponent(`${MULA_BASE}/stocks/${symbol}`)).then(r => r.json()),
-    fetchMulaYearly(),
+    fetch(PROXY + encodeURIComponent(`${MULA_BASE}/stocks/${symbol}/history?range=1y`)).then(r => r.json()),
   ]);
 
   if (!liveRes.success) throw new Error(`Mula API: ${liveRes.error?.message}`);
 
-  const s      = liveRes.data;
-  const equity = s.equity || {};
-  const co     = equity.company || {};
-  const yr     = yearlyStocks.find(x => x.symbol === symbol) || null;
+  const s         = liveRes.data;
+  const equity    = (histRes.success ? histRes.data?.equity : null) || s.equity || {};
+  const co        = equity.company || {};
+  const snapshots = histRes.success ? (histRes.data?.snapshots || []) : [];
 
   const price     = s.price ?? null;
   const change    = s.change ?? null;
   const prevClose = price != null && change != null ? price - change : null;
   const changePct = prevClose && prevClose !== 0 ? change / prevClose : null;
 
-  // 52-week range: openPrice = price 1yr ago (approx low), current = approx high
-  const fiftyTwoWeekLow  = yr ? Math.min(yr.openPrice, price ?? yr.openPrice) : null;
-  const fiftyTwoWeekHigh = yr ? Math.max(yr.openPrice, price ?? yr.openPrice) : null;
+  // True 52-week high/low from daily snapshots
+  const prices52W = snapshots.map(x => x.price).filter(Boolean);
+  if (price != null) prices52W.push(price);
+  const fiftyTwoWeekHigh = prices52W.length ? Math.max(...prices52W) : null;
+  const fiftyTwoWeekLow  = prices52W.length ? Math.min(...prices52W) : null;
+
+  // 1-year momentum: compare first snapshot price to current
+  const firstSnap    = snapshots[0];
+  const yearlyOpenPrice     = firstSnap?.price ?? null;
+  const yearlyChangePercent = yearlyOpenPrice && price
+    ? ((price - yearlyOpenPrice) / yearlyOpenPrice) * 100 : null;
+
+  // 30-day momentum: last 30 snapshots
+  const recent30 = snapshots.slice(-30);
+  const recent30First = recent30[0]?.price ?? null;
+  const momentum30Pct = recent30First && price
+    ? ((price - recent30First) / recent30First) * 100 : null;
 
   const trailingEps   = equity.eps ?? null;
   const trailingPE    = trailingEps && price ? price / trailingEps : null;
@@ -98,8 +98,9 @@ async function getGseStockData(ticker) {
       dividendYield,
       bidPrice: s.bidPrice ?? null,
       askPrice: s.askPrice ?? null,
-      yearlyChangePercent: yr?.percentChange ?? null,
-      yearlyOpenPrice: yr?.openPrice ?? null,
+      yearlyChangePercent,
+      yearlyOpenPrice,
+      momentum30Pct,
       dataSource: 'mula-api',
     },
     summary: null,
