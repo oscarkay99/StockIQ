@@ -50,6 +50,12 @@ function PillarBar({ label, score }) {
   );
 }
 
+function targetDate(monthsAhead) {
+  const d = new Date();
+  d.setMonth(d.getMonth() + monthsAhead);
+  return d.toLocaleString('en-US', { month: 'short', year: 'numeric' });
+}
+
 function SignalCard({ sig, streaming, isAiOnly }) {
   const verdict = sig.VERDICT || 'HOLD';
   const conf    = sig.CONFIDENCE || 'MEDIUM';
@@ -135,11 +141,11 @@ function SignalCard({ sig, streaming, isAiOnly }) {
 
       {/* Price levels grid */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-        <LevelCell label="Entry Zone"    value={`${fmt(sig.ENTRY_LOW)} – ${fmt(sig.ENTRY_HIGH)}`} color="text-info"  />
-        <LevelCell label="Target 1M"     value={fmt(sig.TARGET_1M)}   color="text-gain" />
-        <LevelCell label="Target 3M"     value={fmt(sig.TARGET_3M)}   color="text-gain" />
-        <LevelCell label="Target 12M"    value={fmt(sig.TARGET_12M)}  color="text-gain" />
-        <LevelCell label="Stop-Loss"     value={fmt(sig.STOP_LOSS)}   color="text-loss" />
+        <LevelCell label="Entry Zone"           value={`${fmt(sig.ENTRY_LOW)} – ${fmt(sig.ENTRY_HIGH)}`} color="text-info"  />
+        <LevelCell label={targetDate(1)}        value={fmt(sig.TARGET_1M)}   color="text-gain" />
+        <LevelCell label={targetDate(3)}        value={fmt(sig.TARGET_3M)}   color="text-gain" />
+        <LevelCell label={targetDate(12)}       value={fmt(sig.TARGET_12M)}  color="text-gain" />
+        <LevelCell label="Stop-Loss"            value={fmt(sig.STOP_LOSS)}   color="text-loss" />
       </div>
     </div>
   );

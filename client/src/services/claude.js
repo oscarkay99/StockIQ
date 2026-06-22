@@ -259,9 +259,21 @@ Output format:
 **Hedge:** [What to own alongside this to protect against the main risk]`,
   },
   trade_signal: {
-    buildPrompt: (ctx) => `You are a quantitative trading analyst with deep knowledge of global equities. Produce a decisive, differentiated trade signal for this specific stock.
+    buildPrompt: (ctx) => {
+      const now = new Date();
+      const fmtDate = (d) => d.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+      const addMonths = (n) => { const d = new Date(now); d.setMonth(d.getMonth() + n); return d; };
+      const analysisDate = now.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+      const date1M  = fmtDate(addMonths(1));
+      const date3M  = fmtDate(addMonths(3));
+      const date6M  = fmtDate(addMonths(6));
+      const date12M = fmtDate(addMonths(12));
+      return `You are a quantitative trading analyst with deep knowledge of global equities. Produce a decisive, differentiated trade signal for this specific stock.
 
 ${ctx}
+
+ANALYSIS DATE: ${analysisDate}
+TARGET DATES: 1M = ${date1M} | 3M = ${date3M} | 6M = ${date6M} | 12M = ${date12M}
 
 ---
 SCORING FRAMEWORK
@@ -336,11 +348,11 @@ Rules:
 - UPSIDE_PCT: % from entry midpoint to 12M target (can be negative for SELL/STRONG_SELL)
 - NEVER output 0.00 for price fields. Estimate from your knowledge of the stock's typical price range. For GSE stocks use GHS 0.10–50 range; for NSE use NGN 1–1000; for JSE use ZAR 5–5000.
 
-After the signal block, max 200 words. Be bold and specific — do not hedge everything. Give real projections.
+After the signal block, max 200 words. Be bold and specific — do not hedge everything. Use the exact target dates provided above.
 
 **Verdict:** [Restate STRONG BUY / BUY / HOLD / SELL / STRONG SELL with one sharp sentence explaining why]
 
-**12-month outlook:** [State a clear price target and expected return %. e.g. "Expect 35% upside to GHS X.XX by mid-2026 driven by..."]
+**Outlook by ${date12M}:** [State a clear price target and expected return %. e.g. "Expect 35% upside to GHS X.XX by ${date12M} driven by..."]
 
 **Bulls say:**
 - [specific fundamental or technical argument with actual figures you know]
@@ -348,11 +360,12 @@ After the signal block, max 200 words. Be bold and specific — do not hedge eve
 
 **Bears say:**
 - [biggest company-specific risk — be specific, not generic]
-- [exact condition that would flip this from BUY to SELL]
+- [exact condition that would flip this signal]
 
 **Entry:** [specific price level]
 **Stop-loss:** [specific price level — if breached, exit immediately]
-**Cut if:** [one specific event or condition that invalidates the thesis completely]`,
+**Cut if:** [one specific event or condition that invalidates the thesis completely]`;
+    },
   },
   dividend_analysis: {
     buildPrompt: (ctx) => `${DIRECT}You are a dividend investing specialist. Give me a direct dividend verdict on this stock.
