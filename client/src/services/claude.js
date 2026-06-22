@@ -262,7 +262,8 @@ Output format:
     buildPrompt: (ctx) => {
       const now = new Date();
       const fmtDate = (d) => d.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-      const addMonths = (n) => { const d = new Date(now); d.setMonth(d.getMonth() + n); return d; };
+      // Use day=1 to avoid JS setMonth overflow on month-end dates (e.g. Jan 31 + 1M → Mar, not Feb)
+      const addMonths = (n) => new Date(now.getFullYear(), now.getMonth() + n, 1);
       const analysisDate = now.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
       const date1M  = fmtDate(addMonths(1));
       const date3M  = fmtDate(addMonths(3));

@@ -51,8 +51,9 @@ function PillarBar({ label, score }) {
 }
 
 function targetDate(monthsAhead) {
-  const d = new Date();
-  d.setMonth(d.getMonth() + monthsAhead);
+  const now = new Date();
+  // Use day=1 to avoid JS setMonth overflow on month-end dates
+  const d = new Date(now.getFullYear(), now.getMonth() + monthsAhead, 1);
   return d.toLocaleString('en-US', { month: 'short', year: 'numeric' });
 }
 
