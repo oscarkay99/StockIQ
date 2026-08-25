@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Menu, TrendingUp, Search, Loader2, X, Wifi, ScanSearch } from 'lucide-react';
+import { Menu, TrendingUp, Search, Loader2, X, Wifi, ScanSearch, LayoutGrid } from 'lucide-react';
 import { searchStocks, getFullStockData, buildStubFromMarkets } from '../services/stockData.js';
 
 export default function Header({ sidebarOpen, onToggleSidebar, onSelectStock, onLiveUpdate, view, onSetView }) {
@@ -53,6 +53,7 @@ export default function Header({ sidebarOpen, onToggleSidebar, onSelectStock, on
   const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
 
   const isScreener = view === 'screener';
+  const isDashboard = view === 'dashboard';
 
   return (
     <header className="flex-shrink-0 h-12 flex items-center gap-3 px-4 bg-surface border-b border-rim z-40">
@@ -75,13 +76,23 @@ export default function Header({ sidebarOpen, onToggleSidebar, onSelectStock, on
         </div>
       </div>
 
-      {/* Nav pill — Stocks / Screener */}
+      {/* Nav pill — Dashboard / Stocks / Screener */}
       <div className="flex items-center gap-px bg-card border border-rim rounded-lg p-0.5 flex-shrink-0">
+        <button
+          onClick={() => onSetView('dashboard')}
+          className={`
+            flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-medium transition-all cursor-pointer
+            ${isDashboard ? 'bg-gain/20 text-gain' : 'text-t3 hover:text-t2'}
+          `}
+        >
+          <LayoutGrid size={11} />
+          Dashboard
+        </button>
         <button
           onClick={() => onSetView('stocks')}
           className={`
             flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-medium transition-all cursor-pointer
-            ${!isScreener ? 'bg-raised text-t1' : 'text-t3 hover:text-t2'}
+            ${!isScreener && !isDashboard ? 'bg-raised text-t1' : 'text-t3 hover:text-t2'}
           `}
         >
           Stocks

@@ -540,6 +540,109 @@ export async function streamAnalysis(analysisType, stockData, extraContext, onCh
   }
 }
 
+// GSE's own live market-data feed — CORS-open, no proxy needed (see stockData.js
+// for the same pattern used per-ticker). Used here to ground the whole-market
+// dashboard scan in today's actual prices instead of pure training knowledge.
+async function fetchGseLiveSnapshot() {
+  try {
+    const rows = await fetch('https://gsemarketwatch.com/api/symbol-statistics').then(r => r.json());
+    const bySymbol = new Map();
+    for (const r of rows) bySymbol.set(r.symbol.toUpperCase(), r);
+    return bySymbol;
+  } catch {
+    return new Map();
+  }
+}
+
+export async function streamMarketDashboard({ market }, onChunk, signal) {
+  const isGse = market === 'GSE';
+  const liveMap = isGse ? await fetchGseLiveSnapshot() : new Map();
+  if (signal?.aborted) return;
+
+  const lines = [];
+  for (const [key, mkt] of Object.entries(MARKETS)) {
+    if (market && market !== 'ALL' && key !== market) continue;
+    for (const s of mkt.stocks) {
+      let line = `${s.ticker} | ${s.name} | ${s.sector} | ${mkt.currency}`;
+
+      const bare = s.ticker.replace(/\.GH$/i, '').toUpperCase();
+      const live = liveMap.get(bare);
+      if (live) {
+        const price = live.last_trade_price || live.bid_price || live.open_price;
+        if (price && price !== '0.00') line += ` | live price ${price} (${live.percent_change}% today)`;
+      }
+
+      const fund = GSE_FUND[s.ticker];
+      if (fund) {
+        const bits = [`FY${fund.fiscalYear}`];
+        if (fund.revenue != null) bits.push(`rev ${fund.revenue}`);
+        if (fund.netMargin != null) bits.push(`netMargin ${fund.netMargin}%`);
+        if (fund.roe != null) bits.push(`ROE ${fund.roe}%`);
+        bits.push(`data:${fund.dataQuality}`);
+        line += ` | ${bits.join(' ')}`;
+      }
+
+      lines.push(line);
+    }
+  }
+  const stockList = lines.join('\n');
+  const marketLabel = market === 'ALL' ? 'all markets (Ghana GSE, US, Nigeria, South Africa)' : market;
+
+  const prompt = `You are a quantitative equity analyst producing a market dashboard. Rate every stock in the list below. Be direct — no intros.
+
+MARKET: ${marketLabel}
+TODAY: current session — where a stock's entry below includes "live price", that figure is today's actual traded price on the exchange; where it includes fundamentals (FY, revenue, netMargin, ROE), those are researched figures, not training-knowledge guesses — weight both above your training-knowledge priors when present. Where neither is present, fall back to training knowledge and lower your confidence accordingly.
+
+STOCKS TO RATE (ticker | name | sector | currency | [live price] | [fundamentals]):
+${stockList}
+
+Classify every stock into exactly one of three buckets:
+- BUY: good-to-strong fundamentals and/or momentum, reasonable or attractive valuation — worth accumulating now
+- HOLD: fair value, mixed signals, or an existing position with no urgent action — not a fresh buy, not a reason to exit
+- SELL: overvalued, weak/deteriorating fundamentals, high risk, or a clear better alternative exists in the same sector
+
+OUTPUT FORMAT — use exactly these three sections, include every stock in exactly one section, most-conviction first within each:
+
+## BUY
+| Ticker | Name | Reason (8 words max) |
+|--------|------|----------------------|
+| TICKER | Name | reason |
+
+## HOLD
+| Ticker | Name | Reason (8 words max) |
+|--------|------|----------------------|
+| TICKER | Name | reason |
+
+## SELL
+| Ticker | Name | Reason (8 words max) |
+|--------|------|----------------------|
+| TICKER | Name | reason |
+
+---
+TOP_PICK: [TICKER] — [1 sentence why it stands out above all others]
+
+Rules:
+- Every stock must appear in exactly one section, using its exact ticker as given above
+- For African markets (GSE, NSE), weight liquidity and dividend history more heavily
+- Be decisive — if genuinely torn between HOLD and SELL, use HOLD; if torn between BUY and HOLD, use HOLD
+- No padding, no explanations beyond the tables and top pick`;
+
+  const stream = getClient().messages.stream({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 2500,
+    messages: [{ role: 'user', content: prompt }],
+  });
+
+  if (signal) signal.addEventListener('abort', () => stream.abort());
+
+  for await (const chunk of stream) {
+    if (signal?.aborted) break;
+    if (chunk.type === 'content_block_delta' && chunk.delta?.type === 'text_delta') {
+      onChunk(chunk.delta.text);
+    }
+  }
+}
+
 export async function streamSignalScan({ market }, onChunk, signal) {
   const entries = [];
   for (const [key, mkt] of Object.entries(MARKETS)) {

@@ -6,12 +6,13 @@ import StockOverview from './components/StockOverview.jsx';
 import AnalysisHub from './components/AnalysisHub.jsx';
 import EmptyState from './components/EmptyState.jsx';
 import Screener from './components/Screener.jsx';
+import Dashboard from './components/Dashboard.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 
 export default function App() {
   const [selected, setSelected] = useState(null);   // { ticker, data }
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [view, setView] = useState('stocks');        // 'stocks' | 'screener'
+  const [view, setView] = useState('dashboard');     // 'dashboard' | 'stocks' | 'screener'
 
   // New stock selected (shows instantly with stub data)
   const handleSelect = useCallback((ticker, data) => {
@@ -49,7 +50,9 @@ export default function App() {
 
         {/* Main */}
         <main className="flex-1 overflow-hidden flex flex-col">
-          {view === 'screener' ? (
+          {view === 'dashboard' ? (
+            <Dashboard onSelectStock={handleSelect} onLiveUpdate={handleLiveUpdate} />
+          ) : view === 'screener' ? (
             <Screener onSelectStock={handleSelect} />
           ) : selected ? (
             <div className="flex-1 overflow-y-auto p-5 space-y-4 max-w-5xl mx-auto w-full">
