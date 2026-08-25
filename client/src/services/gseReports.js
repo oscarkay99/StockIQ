@@ -3,6 +3,12 @@ import REPORT_URLS from '../data/gse-report-urls.json';
 const PROXY = 'https://corsproxy.io/?url=';
 const WP_POSTS = 'https://gse.com.gh/wp-json/wp/v2/posts';
 
+// Ghana-listed companies file half-year (interim/unaudited) statements between annual
+// audited reports — there's no full quarterly cadence like the US. A half-year filing
+// is often much fresher than the last annual report, so it must win when more recent.
+const INTERIM_TERMS = ['interim', 'half year', 'half-year', 'unaudited', 'nine month'];
+const ANNUAL_TERMS = ['annual', 'audited', 'financial'];
+
 function arrayBufferToBase64(buffer) {
   const bytes = new Uint8Array(buffer);
   const chunkSize = 8192;
@@ -20,12 +26,79 @@ async function fetchPdfAsBase64(pdfUrl) {
   return arrayBufferToBase64(buffer);
 }
 
-// Primary: use our pre-built static map of PDF URLs scraped from gse.com.gh sitemap.
-// Fallback: search the WP REST API (covers any new filings added after the map was built).
-export async function fetchGseReportPdf(ticker) {
-  const entry = REPORT_URLS[ticker];
+function extractPdfUrl(contentHtml) {
+  // href may be missing the https:// prefix
+  const m = contentHtml.match(/href=["']((?:https?:\/\/)?gse\.com\.gh\/wp-content\/uploads\/[^"']+\.pdf)/i);
+  if (!m) return null;
+  return m[1].startsWith('http') ? m[1] : 'https://' + m[1];
+}
 
-  // ── Static map lookup ─────────────────────────────────────────────────────
+function classifyPeriod(title) {
+  return /half[\s-]?year|interim|unaudited|nine[\s-]?month|\bq[1-3]\b|quarter/i.test(title)
+    ? 'interim'
+    : 'annual';
+}
+
+async function searchPosts(term) {
+  const apiUrl = `${WP_POSTS}?search=${encodeURIComponent(term)}&per_page=5&categories=21&_fields=id,title,content,date`;
+  try {
+    const r = await fetch(PROXY + encodeURIComponent(apiUrl));
+    if (!r.ok) return [];
+    const posts = await r.json();
+    return Array.isArray(posts) ? posts : [];
+  } catch {
+    return [];
+  }
+}
+
+// Search both interim and annual terms in parallel, then keep whichever dated filing
+// is genuinely the most recent — a 2026 half-year report should beat a 2025 annual one.
+async function findMostRecentFiling(symbol) {
+  const terms = [...INTERIM_TERMS, ...ANNUAL_TERMS].map((t) => `${symbol} ${t}`);
+  const results = await Promise.all(terms.map(searchPosts));
+
+  let best = null;
+  const seen = new Set();
+  for (const posts of results) {
+    for (const post of posts) {
+      if (seen.has(post.id)) continue;
+      seen.add(post.id);
+
+      const pdfUrl = extractPdfUrl(post.content?.rendered || '');
+      if (!pdfUrl) continue;
+      const date = post.date ? new Date(post.date) : null;
+      if (!date || Number.isNaN(date.getTime())) continue;
+
+      if (!best || date > best.date) {
+        const title = post.title?.rendered || symbol;
+        best = { date, pdfUrl, title, periodType: classifyPeriod(title) };
+      }
+    }
+  }
+  return best;
+}
+
+// Primary: search gse.com.gh live for the most recent filing (interim or annual).
+// Fallback: our pre-built static map of annual report PDF URLs scraped from the sitemap,
+// used only if the live search fails or finds nothing.
+export async function fetchGseReportPdf(ticker) {
+  const symbol = ticker.replace(/\.GH$/i, '').toUpperCase();
+
+  const best = await findMostRecentFiling(symbol);
+  if (best) {
+    try {
+      const base64 = await fetchPdfAsBase64(best.pdfUrl);
+      return {
+        base64,
+        title: best.title,
+        url: best.pdfUrl,
+        periodType: best.periodType,
+        filedDate: best.date.toISOString().slice(0, 10),
+      };
+    } catch { /* fall through to static map */ }
+  }
+
+  const entry = REPORT_URLS[ticker];
   if (entry?.pdfUrl) {
     try {
       const base64 = await fetchPdfAsBase64(entry.pdfUrl);
@@ -33,42 +106,10 @@ export async function fetchGseReportPdf(ticker) {
         base64,
         title: `${ticker} Annual Report FY${entry.fiscalYear}`,
         url: entry.pdfUrl,
+        periodType: 'annual',
         fiscalYear: entry.fiscalYear,
       };
-    } catch { /* fall through to REST API */ }
-  }
-
-  // ── Fallback: WP REST API search ──────────────────────────────────────────
-  const symbol = ticker.replace(/\.GH$/i, '').toUpperCase();
-  const terms = [`${symbol} annual`, `${symbol} audited`, `${symbol} financial`];
-
-  for (const term of terms) {
-    const apiUrl = `${WP_POSTS}?search=${encodeURIComponent(term)}&per_page=5&categories=21&_fields=id,title,content`;
-    let posts;
-    try {
-      const r = await fetch(PROXY + encodeURIComponent(apiUrl));
-      if (!r.ok) continue;
-      posts = await r.json();
-    } catch { continue; }
-
-    if (!Array.isArray(posts) || posts.length === 0) continue;
-
-    for (const post of posts) {
-      const content = post.content?.rendered || '';
-      const title = post.title?.rendered || symbol;
-
-      // href may be missing https:// prefix
-      const m = content.match(/href=["']((?:https?:\/\/)?gse\.com\.gh\/wp-content\/uploads\/[^"']+\.pdf)/i);
-      if (!m) continue;
-
-      let pdfUrl = m[1];
-      if (!pdfUrl.startsWith('http')) pdfUrl = 'https://' + pdfUrl;
-
-      try {
-        const base64 = await fetchPdfAsBase64(pdfUrl);
-        return { base64, title, url: pdfUrl, fiscalYear: null };
-      } catch { continue; }
-    }
+    } catch { /* no report available */ }
   }
 
   return null;

@@ -4,6 +4,8 @@
 
 import https from 'node:https';
 import { URL } from 'node:url';
+import { getAfricanExchangeQuote } from './africanMarkets.js';
+import { MARKETS } from '../data/markets.js';
 
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
@@ -108,6 +110,19 @@ export async function getFullStockData(ticker) {
   const cached = fromCache(cacheKey);
   if (cached) return cached;
 
+  // GSE and NSE Nigeria aren't covered by Yahoo Finance (either 404s outright, or
+  // for a handful of tickers collides with an unrelated delisted US symbol of the
+  // same string). Those exchanges' own live/EOD price feeds are used instead.
+  const suffix = ticker.split('.').pop()?.toUpperCase();
+  if (suffix === 'GH' || suffix === 'LG') {
+    const result = await buildAfricanExchangeResult(ticker);
+    if (result) {
+      setCache(cacheKey, result);
+      return result;
+    }
+    // fall through to Yahoo/ai-only stub below if the live feed had no match
+  }
+
   // Primary: v8 chart (works without auth — gives live price + meta)
   let chartMeta = null;
   let hasPrice = false;
@@ -191,6 +206,61 @@ export async function getFullStockData(ticker) {
   const result = { quote, summary: null, liveData: hasPrice };
   setCache(cacheKey, result);
   return result;
+}
+
+function findMarketListing(ticker) {
+  for (const market of Object.values(MARKETS)) {
+    const stock = market.stocks.find(s => s.ticker.toUpperCase() === ticker.toUpperCase());
+    if (stock) return { stock, currency: market.currency, exchangeName: market.name };
+  }
+  return null;
+}
+
+async function buildAfricanExchangeResult(ticker) {
+  let live;
+  try {
+    live = await getAfricanExchangeQuote(ticker);
+  } catch {
+    return null;
+  }
+  if (!live) return null;
+
+  const listing = findMarketListing(ticker);
+
+  const quote = {
+    symbol: ticker,
+    longName: listing?.stock.name || ticker,
+    shortName: listing?.stock.name || ticker,
+    currency: listing?.currency || null,
+    exchange: listing?.exchangeName || '',
+    fullExchangeName: listing?.exchangeName || '',
+    sector: listing?.stock.sector || null,
+    industry: null,
+    country: null,
+    description: null,
+    website: null,
+    ...live,
+    // fundamentals (P/E, market cap, etc.) aren't part of these exchange feeds
+    marketCap: null,
+    trailingPE: null,
+    forwardPE: null,
+    trailingEps: null,
+    dividendYield: null,
+    fiftyTwoWeekHigh: null,
+    fiftyTwoWeekLow: null,
+    beta: null,
+    profitMargin: null,
+    revenueTotal: null,
+    revenuePerShare: null,
+    returnOnEquity: null,
+    returnOnAssets: null,
+    grossProfit: null,
+    operatingMargin: null,
+    analystRating: null,
+    analystTargetPrice: null,
+  };
+
+  return { quote, summary: null, liveData: true };
 }
 
 function buildAiOnlyStub(ticker, errMsg = null) {

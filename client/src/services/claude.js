@@ -41,7 +41,7 @@ function buildGseFundamentals(ticker) {
   const risks = f.keyRisks?.map(r => `  - ${r}`).join('\n') || '';
 
   return `
-GSE FUNDAMENTAL DATA (FY${f.fiscalYear}, source: annual reports — ${f.dataQuality} confidence):
+GSE FUNDAMENTAL DATA (FY${f.fiscalYear} static baseline, last verified ${GSE_FUND._meta?.lastUpdated || 'unknown'} — ${f.dataQuality} confidence; if a live financial statement is attached above, treat its figures as more current and authoritative):
 ${rows.join('\n')}
 ${f.analystNote ? `\nAnalyst note: ${f.analystNote}` : ''}
 ${strengths ? `\nKey strengths:\n${strengths}` : ''}
@@ -502,7 +502,7 @@ export async function streamAnalysis(analysisType, stockData, extraContext, onCh
     try {
       const race = await Promise.race([
         fetchGseReportPdf(ticker),
-        new Promise(r => setTimeout(r, 9000, null)),
+        new Promise(r => setTimeout(r, 10000, null)),
       ]);
       pdfData = race;
     } catch { /* proceed without PDF */ }
@@ -517,7 +517,9 @@ export async function streamAnalysis(analysisType, stockData, extraContext, onCh
         },
         {
           type: 'text',
-          text: `The document above is the company's most recent financial statement filed on the Ghana Stock Exchange (gse.com.gh).\n\n${prompt}`,
+          text: pdfData.periodType === 'interim'
+            ? `The document above is the company's most recent INTERIM (half-year/unaudited) financial statement filed on the Ghana Stock Exchange (gse.com.gh)${pdfData.filedDate ? ` on ${pdfData.filedDate}` : ''}. This is more current than the last annual report — use it as the primary source for present-day financial health, and note that its revenue/profit figures cover only the reported partial period, not a full fiscal year.\n\n${prompt}`
+            : `The document above is the company's most recent ANNUAL financial statement filed on the Ghana Stock Exchange (gse.com.gh)${pdfData.filedDate ? ` on ${pdfData.filedDate}` : ''}. No more recent interim/half-year filing was found — flag if this data may be stale for a buy/sell/hold call.\n\n${prompt}`,
         },
       ]
     : prompt;
