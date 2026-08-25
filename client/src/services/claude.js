@@ -1,7 +1,7 @@
 import { getClient } from './anthropic.js';
 import MARKETS from '../data/markets.json';
 import GSE_FUND from '../data/gse-fundamentals.json';
-import { fetchGseReportPdf } from './gseReports.js';
+import { fetchGseReportPdf, checkLatestFilingDate } from './gseReports.js';
 
 function fmt(val, prefix = '', suffix = '', decimals = 2) {
   if (val == null) return 'N/A';
@@ -556,7 +556,21 @@ async function fetchGseLiveSnapshot() {
 
 export async function streamMarketDashboard({ market }, onChunk, signal) {
   const isGse = market === 'GSE';
-  const liveMap = isGse ? await fetchGseLiveSnapshot() : new Map();
+
+  const gseTickers = isGse
+    ? MARKETS.GSE.stocks.map(s => s.ticker)
+    : [];
+
+  // Live price snapshot + a per-ticker "has this company filed something newer
+  // than our baseline?" check both run in parallel — the freshness check is
+  // metadata-only (title/date, no PDF download), so 39 of them stays cheap.
+  const [liveMap, filingMap] = await Promise.all([
+    isGse ? fetchGseLiveSnapshot() : Promise.resolve(new Map()),
+    isGse
+      ? Promise.all(gseTickers.map(async (t) => [t, await checkLatestFilingDate(t).catch(() => null)]))
+          .then(entries => new Map(entries))
+      : Promise.resolve(new Map()),
+  ]);
   if (signal?.aborted) return;
 
   const lines = [];
@@ -582,6 +596,9 @@ export async function streamMarketDashboard({ market }, onChunk, signal) {
         line += ` | ${bits.join(' ')}`;
       }
 
+      const filing = filingMap.get(s.ticker);
+      if (filing) line += ` | latest filing on record: ${filing.periodType} filed ${filing.filedDate}`;
+
       lines.push(line);
     }
   }
@@ -591,9 +608,9 @@ export async function streamMarketDashboard({ market }, onChunk, signal) {
   const prompt = `You are a quantitative equity analyst producing a market dashboard. Rate every stock in the list below. Be direct — no intros.
 
 MARKET: ${marketLabel}
-TODAY: current session — where a stock's entry below includes "live price", that figure is today's actual traded price on the exchange; where it includes fundamentals (FY, revenue, netMargin, ROE), those are researched figures, not training-knowledge guesses — weight both above your training-knowledge priors when present. Where neither is present, fall back to training knowledge and lower your confidence accordingly.
+TODAY: current session — where a stock's entry below includes "live price", that figure is today's actual traded price on the exchange; where it includes fundamentals (FY, revenue, netMargin, ROE), those are researched figures, not training-knowledge guesses — weight both above your training-knowledge priors when present. Where an entry includes "latest filing on record", that's the most recent financial statement gse.com.gh actually has on file for that company right now — if it's clearly newer than the fundamentals entry's own FY label (e.g. an interim filed well after that fiscal year closed), the baseline numbers may already be outdated; say so briefly in the reason and lean on live price + your judgment rather than the stale figures. Where none of this live data is present, fall back to training knowledge and lower your confidence accordingly.
 
-STOCKS TO RATE (ticker | name | sector | currency | [live price] | [fundamentals]):
+STOCKS TO RATE (ticker | name | sector | currency | [live price] | [fundamentals] | [latest filing on record]):
 ${stockList}
 
 Classify every stock into exactly one of three buckets:

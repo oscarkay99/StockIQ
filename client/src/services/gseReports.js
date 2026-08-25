@@ -78,6 +78,28 @@ async function findMostRecentFiling(symbol) {
   return best;
 }
 
+// Lightweight version of findMostRecentFiling: one search per ticker instead of nine,
+// metadata only (no PDF download). Used to give the market-wide dashboard scan a
+// "has this company filed something newer than our baseline?" signal for all 39
+// GSE tickers at once without the cost of fetching every PDF on every scan.
+export async function checkLatestFilingDate(ticker) {
+  const symbol = ticker.replace(/\.GH$/i, '').toUpperCase();
+  const posts = await searchPosts(`${symbol} financial statement`);
+
+  let best = null;
+  for (const post of posts) {
+    if (!extractPdfUrl(post.content?.rendered || '')) continue; // skip non-filing posts
+    const date = post.date ? new Date(post.date) : null;
+    if (!date || Number.isNaN(date.getTime())) continue;
+    if (!best || date > best.date) {
+      const title = post.title?.rendered || symbol;
+      best = { date, periodType: classifyPeriod(title) };
+    }
+  }
+  if (!best) return null;
+  return { periodType: best.periodType, filedDate: best.date.toISOString().slice(0, 10) };
+}
+
 // Primary: search gse.com.gh live for the most recent filing (interim or annual).
 // Fallback: our pre-built static map of annual report PDF URLs scraped from the sitemap,
 // used only if the live search fails or finds nothing.
