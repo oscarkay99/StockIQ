@@ -501,8 +501,8 @@ export async function streamAnalysis(analysisType, stockData, extraContext, onCh
   if (isGse && PDF_ANALYSIS_TYPES.has(analysisType) && !signal?.aborted) {
     try {
       const race = await Promise.race([
-        fetchGseReportPdf(ticker),
-        new Promise(r => setTimeout(r, 10000, null)),
+        fetchGseReportPdf(ticker, stockData?.quote?.longName),
+        new Promise(r => setTimeout(r, 22000, null)),
       ]);
       pdfData = race;
     } catch { /* proceed without PDF */ }
@@ -518,7 +518,7 @@ export async function streamAnalysis(analysisType, stockData, extraContext, onCh
         {
           type: 'text',
           text: pdfData.periodType === 'interim'
-            ? `The document above is the company's most recent INTERIM (half-year/unaudited) financial statement filed on the Ghana Stock Exchange (gse.com.gh)${pdfData.filedDate ? ` on ${pdfData.filedDate}` : ''}. This is more current than the last annual report — use it as the primary source for present-day financial health, and note that its revenue/profit figures cover only the reported partial period, not a full fiscal year.\n\n${prompt}`
+            ? `The document above is the company's most recent INTERIM (half-year/unaudited) financial statement filed on the Ghana Stock Exchange (gse.com.gh)${pdfData.filedDate ? ` on ${pdfData.filedDate}` : ''}. This is more current than the last full annual report and than any FY-labelled figures given in the text context below — read the actual revenue/profit/EPS figures out of THIS document and cite them explicitly (name the period, e.g. "H1 2026"), rather than defaulting to the older annual numbers. If the document includes a prior-period comparative column, compute the period-over-period growth from it; otherwise state plainly that a clean YoY comparison isn't available rather than substituting the annual figure unlabelled. The older annual/baseline figures below are still useful for balance-sheet items this interim doesn't cover, but wherever the two conflict on revenue/profit for the current period, this document wins.\n\n${prompt}`
             : `The document above is the company's most recent ANNUAL financial statement filed on the Ghana Stock Exchange (gse.com.gh)${pdfData.filedDate ? ` on ${pdfData.filedDate}` : ''}. No more recent interim/half-year filing was found — flag if this data may be stale for a buy/sell/hold call.\n\n${prompt}`,
         },
       ]
@@ -557,18 +557,15 @@ async function fetchGseLiveSnapshot() {
 export async function streamMarketDashboard({ market }, onChunk, signal) {
   const isGse = market === 'GSE';
 
-  const gseTickers = isGse
-    ? MARKETS.GSE.stocks.map(s => s.ticker)
-    : [];
-
   // Live price snapshot + a per-ticker "has this company filed something newer
   // than our baseline?" check both run in parallel — the freshness check is
   // metadata-only (title/date, no PDF download), so 39 of them stays cheap.
   const [liveMap, filingMap] = await Promise.all([
     isGse ? fetchGseLiveSnapshot() : Promise.resolve(new Map()),
     isGse
-      ? Promise.all(gseTickers.map(async (t) => [t, await checkLatestFilingDate(t).catch(() => null)]))
-          .then(entries => new Map(entries))
+      ? Promise.all(MARKETS.GSE.stocks.map(async (s) =>
+          [s.ticker, await checkLatestFilingDate(s.ticker, s.name).catch(() => null)]
+        )).then(entries => new Map(entries))
       : Promise.resolve(new Map()),
   ]);
   if (signal?.aborted) return;
