@@ -16,8 +16,7 @@ function setCache(key, data) {
 
 const MULA_BASE = 'https://gse-service.mulatechnologies.com/api/v1';
 
-
-async function getGseStockData(ticker) {
+async function getGseStockDataFromMula(ticker) {
   const symbol = ticker.replace(/\.GH$/i, '');
 
   // Fetch live data and full 1-year daily history in parallel
@@ -105,6 +104,87 @@ async function getGseStockData(ticker) {
     summary: null,
     liveData: true,
   };
+}
+
+// ── GSE Live Data (GSE's own exchange feed — fallback) ──────────────────────
+// gsemarketwatch.com is the Ghana Stock Exchange's own real-time market-watch
+// app; its API is CORS-open (no proxy needed) so it's used whenever Mula fails
+// or is unavailable. It only gives today's snapshot (no history/fundamentals),
+// but that's still a real live price instead of an AI guess.
+
+const GSE_EXCHANGE_FEED = 'https://gsemarketwatch.com/api/symbol-statistics';
+const GSE_FEED_TTL = 60 * 1000;
+let gseFeedCache = null;
+
+const numFrom = (v) => {
+  if (v == null) return null;
+  const n = typeof v === 'string' ? parseFloat(v.replace(/,/g, '')) : v;
+  return Number.isFinite(n) ? n : null;
+};
+
+async function fetchGseExchangeTable() {
+  if (gseFeedCache && Date.now() - gseFeedCache.ts < GSE_FEED_TTL) return gseFeedCache.data;
+  const rows = await fetch(GSE_EXCHANGE_FEED).then(r => r.json());
+  const bySymbol = new Map();
+  for (const r of rows) bySymbol.set(r.symbol.toUpperCase(), r);
+  gseFeedCache = { ts: Date.now(), data: bySymbol };
+  return bySymbol;
+}
+
+async function getGseStockDataFromExchangeFeed(ticker) {
+  const symbol = ticker.replace(/\.GH$/i, '').toUpperCase();
+  const table = await fetchGseExchangeTable();
+  const r = table.get(symbol);
+  if (!r) throw new Error(`${symbol} not found on GSE exchange feed`);
+
+  const lastTrade = numFrom(r.last_trade_price);
+  const bid = numFrom(r.bid_price);
+  const ask = numFrom(r.ask_price);
+  const price = lastTrade || bid || ask || numFrom(r.open_price);
+  if (price == null) throw new Error('no price on GSE exchange feed');
+
+  const changePct = numFrom(r.percent_change); // percent units, e.g. -4.05
+  const change = numFrom(r.net_change);
+  const prevClose = change != null ? price - change : null;
+
+  let longName = symbol, sector = null;
+  for (const [, mkt] of Object.entries(MARKETS)) {
+    const found = mkt.stocks.find(x => x.ticker === ticker);
+    if (found) { longName = found.name; sector = found.sector; break; }
+  }
+
+  return {
+    quote: {
+      symbol: ticker,
+      longName,
+      shortName: longName,
+      currency: 'GHS',
+      exchange: 'Ghana Stock Exchange',
+      fullExchangeName: 'Ghana Stock Exchange',
+      sector,
+      industry: null,
+      regularMarketPrice: price,
+      regularMarketChange: change,
+      regularMarketChangePercent: changePct != null ? changePct / 100 : null,
+      regularMarketDayHigh: numFrom(r.high_price),
+      regularMarketDayLow: numFrom(r.low_price),
+      regularMarketVolume: numFrom(r.total_trade_volume),
+      chartPreviousClose: prevClose,
+      bidPrice: bid,
+      askPrice: ask,
+      dataSource: 'gse-exchange-live',
+    },
+    summary: null,
+    liveData: true,
+  };
+}
+
+async function getGseStockData(ticker) {
+  try {
+    return await getGseStockDataFromMula(ticker);
+  } catch {
+    return await getGseStockDataFromExchangeFeed(ticker);
+  }
 }
 
 // ── Yahoo Finance ────────────────────────────────────────────────────────────

@@ -39,9 +39,10 @@
       { "ticker": "CLYD.GH", "name": "Clydestone Ghana Ltd", "sector": "Technology" },
       { "ticker": "DIGICUT.GH", "name": "Digicut Ghana Ltd", "sector": "Technology" },
       { "ticker": "ALLGH.GH", "name": "Atlantic Lithium Limited", "sector": "Mining & Gold" },
-      { "ticker": "MAC.GH", "name": "Mechanical Lloyd Company Ltd", "sector": "Distribution" },
-      { "ticker": "MMH.GH", "name": "MHL Holdings Ltd", "sector": "Distribution" },
-      { "ticker": "HORDS.GH", "name": "Hords Ltd", "sector": "Real Estate" }
+      { "ticker": "MAC.GH", "name": "Mega African Capital Ltd", "sector": "Investment Holding" },
+      { "ticker": "MMH.GH", "name": "Meridian-Marshalls Holdings Ltd", "sector": "Education" },
+      { "ticker": "HORDS.GH", "name": "Hords Ltd", "sector": "Real Estate" },
+      { "ticker": "KASA.GH", "name": "Kasapreko Company PLC", "sector": "Consumer Goods" }
     ]
   },
   "NYSE_NASDAQ": {

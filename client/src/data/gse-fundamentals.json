@@ -1268,5 +1268,39 @@
     ],
     "analystNote": "Micro-cap real estate company with very limited GSE presence. Unaudited FY2025 results (year ended Dec 31, 2025) show a real turnaround — revenue up over 20x to GH¢5.64M and a swing to a small net profit (GH¢0.16M) after a loss in 2024 — but the absolute scale remains tiny and cash flow commentary was reported as under pressure despite the topline gain. Balance-sheet ratios (current ratio, ROE/ROA, debt/equity) are carried forward from prior estimates and not reverified this cycle. Essentially untradeable; watch for the audited FY2025 statements to confirm the turnaround holds.",
     "dataQuality": "Medium"
+  },
+  "KASA.GH": {
+    "fiscalYear": 2025,
+    "currency": "GHS",
+    "revenue": 3500,
+    "netProfit": 341.8,
+    "netMargin": 9.8,
+    "operatingMargin": null,
+    "eps": null,
+    "dps": 0.0,
+    "currentRatio": null,
+    "roe": null,
+    "roa": null,
+    "debtToEquity": null,
+    "freeCashFlowPositive": true,
+    "sharesM": null,
+    "moat": "Moderate",
+    "managementRating": "Strong",
+    "dividendHistory": "None",
+    "businessClarity": "Clear",
+    "keyStrengths": [
+      "Ghana's leading indigenous beverages/spirits producer — Alomo Bitters is a dominant household brand",
+      "Revenue grew from GHS660M (2020) to GHS3.5bn (2025), a ~40% CAGR",
+      "Newly listed via a 146%-oversubscribed IPO (June 2026) that raised GHS700M, funding a new beverage plant",
+      "Net profit surged to GHS341.8M in FY2025 (reported as +265% ahead of the IPO)"
+    ],
+    "keyRisks": [
+      "No dividend history yet — newly public, capital being redirected to plant expansion",
+      "IPO priced at an 11.3x forward P/E (2026E) — growth already partly priced in",
+      "Consumer discretionary spending in Ghana is inflation-sensitive",
+      "EPS, share count and balance-sheet ratios not yet independently verified post-IPO — left null rather than guessed"
+    ],
+    "analystNote": "Kasapreko Company PLC (ticker KASA) IPO'd and listed on the GSE on 15 June 2026 — it was not yet trading when this dataset was first compiled, which is why it was missing from search. FY2025 (pre-IPO) revenue was ~GHS3.5bn with net profit of GHS341.8M, reflecting strong multi-year growth in Ghana's spirits/bitters market. IPO shares offered: 583,333,333 at GHS1.20/share (146% oversubscribed). Total post-IPO share count and per-share metrics were not confirmed from public sources — eps, sharesM, currentRatio, roe, roa, debtToEquity and operatingMargin are left null rather than estimated. Live price/quote data comes from the exchange feed regardless of this static baseline.",
+    "dataQuality": "Medium"
   }
 }

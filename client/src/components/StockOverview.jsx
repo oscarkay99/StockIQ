@@ -131,7 +131,7 @@ export default function StockOverview({ ticker, stockData }) {
                 <ChangeIcon size={12} strokeWidth={2.5} />
                 <span className="font-mono text-xs font-semibold">
                   {isUp ? '+' : ''}{fmt(change, 4)}&nbsp;
-                  ({isUp ? '+' : ''}{fmt(changePct, 2)}%)
+                  ({isUp ? '+' : ''}{fmt(changePct * 100, 2)}%)
                 </span>
               </div>
             )}
