@@ -618,9 +618,11 @@ Classify every stock into exactly one of three buckets:
 OUTPUT FORMAT — use exactly these three sections, include every stock in exactly one section, most-conviction first within each:
 
 ## BUY
-| Ticker | Name | Reason (8 words max) |
-|--------|------|----------------------|
-| TICKER | Name | reason |
+| Ticker | Name | Conviction (1-100) | Reason (8 words max) |
+|--------|------|---------------------|-----------------------|
+| TICKER | Name | 1-100 | reason |
+
+Conviction is how strongly you'd weight this stock in a fresh buy budget relative to the other BUY picks — not a price target. Spread scores meaningfully (don't cluster everything near 50); your highest-conviction BUY should clearly outscore your weakest one.
 
 ## HOLD
 | Ticker | Name | Reason (8 words max) |

@@ -56,7 +56,34 @@ function parseDashboard(text) {
     if (/^ticker$/i.test(cells[0])) continue; // header row
     if (/^-+$/.test(cells[0])) continue;       // separator row
 
-    buckets[current].push({ ticker: cells[0], name: cells[1] || '', reason: cells[2] || '' });
+    if (current === 'BUY' && cells.length >= 4) {
+      const conviction = parseInt(cells[2], 10);
+      buckets.BUY.push({
+        ticker: cells[0],
+        name: cells[1] || '',
+        conviction: Number.isFinite(conviction) ? conviction : null,
+        reason: cells[3] || '',
+      });
+    } else {
+      buckets[current].push({ ticker: cells[0], name: cells[1] || '', reason: cells[2] || '' });
+    }
+  }
+
+  // Apportion a hypothetical buy budget across the BUY list as whole
+  // percentage points that always sum to 100 — weighted by each stock's
+  // conviction score, falling back to an equal split if scores are missing.
+  if (buckets.BUY.length) {
+    const hasAllScores = buckets.BUY.every(it => it.conviction != null && it.conviction > 0);
+    const weights = hasAllScores ? buckets.BUY.map(it => it.conviction) : buckets.BUY.map(() => 1);
+    const total = weights.reduce((a, b) => a + b, 0);
+    const raw = weights.map(w => (w / total) * 100);
+    const floored = raw.map(Math.floor);
+    const remainder = 100 - floored.reduce((a, b) => a + b, 0);
+    const order = raw
+      .map((v, i) => [v - Math.floor(v), i])
+      .sort((a, b) => b[0] - a[0]);
+    for (let i = 0; i < remainder; i++) floored[order[i][1]]++;
+    buckets.BUY.forEach((it, i) => { it.allocation = floored[i]; });
   }
 
   return { buckets, topPick };
@@ -143,6 +170,7 @@ export default function Dashboard({ onSelectStock, onLiveUpdate }) {
 
   const { buckets, topPick } = useMemo(() => parseDashboard(result), [result]);
   const totalRated = buckets.BUY.length + buckets.HOLD.length + buckets.SELL.length;
+  const isError = result.trim().startsWith('**Error:**');
 
   const nextRefreshIn = lastUpdated ? Math.max(0, REFRESH_MS - (now - lastUpdated)) : null;
   const nextRefreshMin = nextRefreshIn != null ? Math.ceil(nextRefreshIn / 60000) : null;
@@ -217,6 +245,12 @@ export default function Dashboard({ onSelectStock, onLiveUpdate }) {
             <div className="text-xs text-t3 py-10 text-center">No scan yet — click Refresh now.</div>
           )}
 
+          {isError && (
+            <div className="panel px-4 py-3 mb-4 border-loss/30 bg-loss/5 text-xs text-t2 whitespace-pre-wrap">
+              {result.replace(/^\*\*Error:\*\*\s*/, '')}
+            </div>
+          )}
+
           {topPick && (
             <div className="panel px-4 py-3 mb-4 flex items-center gap-3 border-gold/30 bg-gold/5">
               <Star size={16} className="text-gold shrink-0" />
@@ -245,6 +279,9 @@ export default function Dashboard({ onSelectStock, onLiveUpdate }) {
                       <div className="flex items-center gap-1.5">
                         <Icon size={13} className={meta.badge.includes('green') ? 'text-gain' : meta.badge.includes('gold') ? 'text-gold' : 'text-loss'} />
                         <span className="text-xs font-semibold text-t1">{meta.label}</span>
+                        {key === 'BUY' && items.length > 0 && (
+                          <span className="text-[10px] text-t3 font-normal">· suggested split</span>
+                        )}
                       </div>
                       <span className={`badge ${meta.badge} text-[10px]`}>{items.length}</span>
                     </div>
@@ -261,10 +298,18 @@ export default function Dashboard({ onSelectStock, onLiveUpdate }) {
                           <div className="flex items-center gap-2">
                             <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${meta.dot}`} />
                             <span className="font-mono text-xs font-semibold text-t1">{it.ticker.split('.')[0]}</span>
-                            <span className="text-[11px] text-t3 truncate">{it.name}</span>
+                            <span className="text-[11px] text-t3 truncate flex-1">{it.name}</span>
+                            {key === 'BUY' && it.allocation != null && (
+                              <span className="font-mono text-[11px] font-semibold text-gain shrink-0">{it.allocation}%</span>
+                            )}
                           </div>
+                          {key === 'BUY' && it.allocation != null && (
+                            <div className="h-1 rounded-full bg-raised mt-1.5 ml-3.5 overflow-hidden">
+                              <div className="h-full bg-gain/60 rounded-full" style={{ width: `${it.allocation}%` }} />
+                            </div>
+                          )}
                           {it.reason && (
-                            <div className="text-[11px] text-t3 mt-0.5 pl-3.5 leading-snug">{it.reason}</div>
+                            <div className="text-[11px] text-t3 mt-1 pl-3.5 leading-snug">{it.reason}</div>
                           )}
                         </button>
                       ))}
