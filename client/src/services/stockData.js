@@ -131,6 +131,26 @@ async function fetchGseExchangeTable() {
   return bySymbol;
 }
 
+// Live traded-volume map for every GSE symbol, straight from the exchange's
+// own feed (same cached call the price lookups use) — for annotating the
+// dashboard's Buy/Hold/Sell lists with today's actual trade activity.
+export async function fetchGseVolumeMap() {
+  try {
+    const table = await fetchGseExchangeTable();
+    const out = new Map();
+    for (const [symbol, r] of table) {
+      out.set(symbol, {
+        volume: numFrom(r.total_trade_volume),
+        bidVolume: numFrom(r.bid_volume),
+        askVolume: numFrom(r.ask_volume),
+      });
+    }
+    return out;
+  } catch {
+    return new Map();
+  }
+}
+
 async function getGseStockDataFromExchangeFeed(ticker) {
   const symbol = ticker.replace(/\.GH$/i, '').toUpperCase();
   const table = await fetchGseExchangeTable();

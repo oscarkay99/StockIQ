@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { TrendingUp, TrendingDown, Minus, RefreshCw, Loader2, Star } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, RefreshCw, Loader2, Star, Activity } from 'lucide-react';
 import { streamMarketDashboard } from '../services/claude.js';
-import { getFullStockData, buildStubFromMarkets } from '../services/stockData.js';
+import { getFullStockData, buildStubFromMarkets, fetchGseVolumeMap } from '../services/stockData.js';
+
+// The exchange feed only covers GSE, so live volume is only ever shown for
+// GSE tickers — never backfilled with stale/training-knowledge numbers for
+// other markets.
+const VOLUME_REFRESH_MS = 60 * 1000;
 
 const MARKETS = [
   { key: 'GSE', label: 'Ghana GSE', flag: '🇬🇭' },
@@ -111,6 +116,7 @@ export default function Dashboard({ onSelectStock, onLiveUpdate }) {
   const [streaming, setStreaming] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [now, setNow]             = useState(Date.now());
+  const [volumeMap, setVolumeMap] = useState(new Map());
   const abortRef    = useRef(null);
   const intervalRef = useRef(null);
 
@@ -168,7 +174,31 @@ export default function Dashboard({ onSelectStock, onLiveUpdate }) {
     return () => clearInterval(t);
   }, []);
 
+  // Live trade volume, straight from the GSE exchange feed — refreshed on its
+  // own short interval, independent of the (much slower) AI rating scan.
+  useEffect(() => {
+    if (market !== 'GSE' && market !== 'ALL') { setVolumeMap(new Map()); return; }
+    let cancelled = false;
+    const load = () => fetchGseVolumeMap().then(m => { if (!cancelled) setVolumeMap(m); });
+    load();
+    const id = setInterval(load, VOLUME_REFRESH_MS);
+    return () => { cancelled = true; clearInterval(id); };
+  }, [market]);
+
   const { buckets, topPick } = useMemo(() => parseDashboard(result), [result]);
+
+  const enrichedBuckets = useMemo(() => {
+    const out = {};
+    for (const key of ['BUY', 'HOLD', 'SELL']) {
+      out[key] = buckets[key].map((it) => {
+        const bare = it.ticker.replace(/\.GH$/i, '').toUpperCase();
+        const v = volumeMap.get(bare);
+        return v ? { ...it, ...v } : it;
+      });
+    }
+    return out;
+  }, [buckets, volumeMap]);
+
   const totalRated = buckets.BUY.length + buckets.HOLD.length + buckets.SELL.length;
   const isError = result.trim().startsWith('**Error:**');
 
@@ -272,7 +302,7 @@ export default function Dashboard({ onSelectStock, onLiveUpdate }) {
               {['BUY', 'HOLD', 'SELL'].map((key) => {
                 const meta = BUCKET_META[key];
                 const Icon = meta.icon;
-                const items = buckets[key];
+                const items = enrichedBuckets[key];
                 return (
                   <div key={key} className="panel overflow-hidden">
                     <div className="px-3 py-2.5 border-b border-rim flex items-center justify-between">
@@ -281,6 +311,11 @@ export default function Dashboard({ onSelectStock, onLiveUpdate }) {
                         <span className="text-xs font-semibold text-t1">{meta.label}</span>
                         {key === 'BUY' && items.length > 0 && (
                           <span className="text-[10px] text-t3 font-normal">· suggested split</span>
+                        )}
+                        {volumeMap.size > 0 && (
+                          <span className="text-[10px] text-t3 font-normal flex items-center gap-0.5">
+                            <Activity size={9} /> live vol
+                          </span>
                         )}
                       </div>
                       <span className={`badge ${meta.badge} text-[10px]`}>{items.length}</span>
@@ -306,6 +341,11 @@ export default function Dashboard({ onSelectStock, onLiveUpdate }) {
                           {key === 'BUY' && it.allocation != null && (
                             <div className="h-1 rounded-full bg-raised mt-1.5 ml-3.5 overflow-hidden">
                               <div className="h-full bg-gain/60 rounded-full" style={{ width: `${it.allocation}%` }} />
+                            </div>
+                          )}
+                          {it.volume != null && (
+                            <div className="text-[10px] text-t3 font-mono mt-1 pl-3.5">
+                              Vol {it.volume.toLocaleString()} today
                             </div>
                           )}
                           {it.reason && (
