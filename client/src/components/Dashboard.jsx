@@ -348,6 +348,16 @@ export default function Dashboard({ onSelectStock, onLiveUpdate }) {
                               Vol {it.volume.toLocaleString()} today
                             </div>
                           )}
+                          {(it.askVolume != null || it.bidVolume != null) && (it.askVolume > 0 || it.bidVolume > 0) && (
+                            <div className="text-[10px] font-mono mt-0.5 pl-3.5 flex items-center gap-2">
+                              {it.askVolume != null && (
+                                <span className="text-gain/80">{it.askVolume.toLocaleString()} to buy</span>
+                              )}
+                              {it.bidVolume != null && (
+                                <span className="text-loss/80">{it.bidVolume.toLocaleString()} to sell</span>
+                              )}
+                            </div>
+                          )}
                           {it.reason && (
                             <div className="text-[11px] text-t3 mt-1 pl-3.5 leading-snug">{it.reason}</div>
                           )}
