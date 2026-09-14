@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { MARKETS } from '../data/markets.js';
-import { streamScreener } from '../services/claude.js';
+import { streamScreener } from '../services/llm.js';
 
 const router = Router();
 

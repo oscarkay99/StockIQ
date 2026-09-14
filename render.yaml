@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: stockiq-server
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: EODHD_API_KEY
+        sync: false

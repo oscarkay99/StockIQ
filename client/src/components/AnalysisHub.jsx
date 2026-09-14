@@ -210,7 +210,7 @@ export default function AnalysisHub({ ticker, stockData }) {
       if (err.name !== 'AbortError' && !ctrl.signal.aborted) {
         setResults(p => ({
           ...p,
-          [type]: `**Error:** ${err.message}\n\nMake sure \`VITE_GEMINI_API_KEY\` is set.`,
+          [type]: `**Error:** ${err.message}`,
         }));
       }
     } finally {

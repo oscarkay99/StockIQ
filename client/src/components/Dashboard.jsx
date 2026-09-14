@@ -141,7 +141,7 @@ export default function Dashboard({ onSelectStock, onLiveUpdate }) {
       }
     } catch (err) {
       if (err.name !== 'AbortError' && !ctrl.signal.aborted && !buf) {
-        setResult(`**Error:** ${err.message}\n\nMake sure \`VITE_GEMINI_API_KEY\` is set.`);
+        setResult(`**Error:** ${err.message}`);
       }
     } finally {
       if (!ctrl.signal.aborted) setStreaming(false);

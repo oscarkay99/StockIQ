@@ -77,7 +77,7 @@ export default function Screener({ onSelectStock }) {
       }
     } catch (err) {
       if (err.name !== 'AbortError' && !ctrl.signal.aborted) {
-        setResult(`**Error:** ${err.message}\n\nMake sure \`VITE_GEMINI_API_KEY\` is set.`);
+        setResult(`**Error:** ${err.message}`);
       }
     } finally {
       setStreaming(false);

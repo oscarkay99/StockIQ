@@ -48,7 +48,7 @@ const numFrom = (v) => {
 
 const GSE_TTL = 60 * 1000;
 
-async function fetchGseTable() {
+export async function fetchGseTable() {
   const cached = fromCache('gse', GSE_TTL);
   if (cached) return cached;
   const rows = await httpsGetJson('https://gsemarketwatch.com/api/symbol-statistics');
