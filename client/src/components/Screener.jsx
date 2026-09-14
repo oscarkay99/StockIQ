@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Search, Loader2, X, Sparkles, Play, RefreshCw, Zap } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { streamScreener, streamSignalScan } from '../services/claude.js';
+import { streamScreener, streamSignalScan } from '../services/llm.js';
 
 const MARKETS = [
   { key: 'ALL',        label: 'All Markets', flag: '🌍' },
@@ -77,7 +77,7 @@ export default function Screener({ onSelectStock }) {
       }
     } catch (err) {
       if (err.name !== 'AbortError' && !ctrl.signal.aborted) {
-        setResult(`**Error:** ${err.message}\n\nMake sure \`VITE_ANTHROPIC_API_KEY\` is set.`);
+        setResult(`**Error:** ${err.message}\n\nMake sure \`VITE_GEMINI_API_KEY\` is set.`);
       }
     } finally {
       setStreaming(false);

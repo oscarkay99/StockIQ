@@ -1,7 +1,9 @@
-import { getClient } from './anthropic.js';
+import { getClient } from './gemini.js';
 import MARKETS from '../data/markets.json';
 import GSE_FUND from '../data/gse-fundamentals.json';
 import { fetchGseReportPdf, checkLatestFilingDate } from './gseReports.js';
+
+const MODEL = 'gemini-3.6-flash';
 
 function fmt(val, prefix = '', suffix = '', decimals = 2) {
   if (val == null) return 'N/A';
@@ -487,6 +489,19 @@ Output format:
 // Analysis types where a GSE annual report PDF adds the most value
 const PDF_ANALYSIS_TYPES = new Set(['fundamental', 'trade_signal', 'growth_dividend', 'risk']);
 
+async function streamGemini({ contents, maxOutputTokens, onChunk, signal }) {
+  const response = await getClient().models.generateContentStream({
+    model: MODEL,
+    contents,
+    config: { maxOutputTokens, abortSignal: signal, thinkingConfig: { thinkingBudget: 0 } },
+  });
+
+  for await (const chunk of response) {
+    if (signal?.aborted) break;
+    if (chunk.text) onChunk(chunk.text);
+  }
+}
+
 export async function streamAnalysis(analysisType, stockData, extraContext, onChunk, signal) {
   const analysis = ANALYSES[analysisType];
   if (!analysis) throw new Error(`Unknown analysis type: ${analysisType}`);
@@ -508,36 +523,23 @@ export async function streamAnalysis(analysisType, stockData, extraContext, onCh
     } catch { /* proceed without PDF */ }
   }
 
-  const messageContent = pdfData
+  const parts = pdfData
     ? [
+        { inlineData: { mimeType: 'application/pdf', data: pdfData.base64 } },
         {
-          type: 'document',
-          source: { type: 'base64', media_type: 'application/pdf', data: pdfData.base64 },
-          title: pdfData.title,
-        },
-        {
-          type: 'text',
           text: pdfData.periodType === 'interim'
             ? `The document above is the company's most recent INTERIM (half-year/unaudited) financial statement filed on the Ghana Stock Exchange (gse.com.gh)${pdfData.filedDate ? ` on ${pdfData.filedDate}` : ''}. This is more current than the last full annual report and than any FY-labelled figures given in the text context below — read the actual revenue/profit/EPS figures out of THIS document and cite them explicitly (name the period, e.g. "H1 2026"), rather than defaulting to the older annual numbers. If the document includes a prior-period comparative column, compute the period-over-period growth from it; otherwise state plainly that a clean YoY comparison isn't available rather than substituting the annual figure unlabelled. The older annual/baseline figures below are still useful for balance-sheet items this interim doesn't cover, but wherever the two conflict on revenue/profit for the current period, this document wins.\n\n${prompt}`
             : `The document above is the company's most recent ANNUAL financial statement filed on the Ghana Stock Exchange (gse.com.gh)${pdfData.filedDate ? ` on ${pdfData.filedDate}` : ''}. No more recent interim/half-year filing was found — flag if this data may be stale for a buy/sell/hold call.\n\n${prompt}`,
         },
       ]
-    : prompt;
+    : [{ text: prompt }];
 
-  const stream = getClient().messages.stream({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 900,
-    messages: [{ role: 'user', content: messageContent }],
+  await streamGemini({
+    contents: [{ role: 'user', parts }],
+    maxOutputTokens: 900,
+    onChunk,
+    signal,
   });
-
-  if (signal) signal.addEventListener('abort', () => stream.abort());
-
-  for await (const chunk of stream) {
-    if (signal?.aborted) break;
-    if (chunk.type === 'content_block_delta' && chunk.delta?.type === 'text_delta') {
-      onChunk(chunk.delta.text);
-    }
-  }
 }
 
 // GSE's own live market-data feed — CORS-open, no proxy needed (see stockData.js
@@ -643,20 +645,7 @@ Rules:
 - Be decisive — if genuinely torn between HOLD and SELL, use HOLD; if torn between BUY and HOLD, use HOLD
 - No padding, no explanations beyond the tables and top pick`;
 
-  const stream = getClient().messages.stream({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 2500,
-    messages: [{ role: 'user', content: prompt }],
-  });
-
-  if (signal) signal.addEventListener('abort', () => stream.abort());
-
-  for await (const chunk of stream) {
-    if (signal?.aborted) break;
-    if (chunk.type === 'content_block_delta' && chunk.delta?.type === 'text_delta') {
-      onChunk(chunk.delta.text);
-    }
-  }
+  await streamGemini({ contents: prompt, maxOutputTokens: 2500, onChunk, signal });
 }
 
 export async function streamSignalScan({ market }, onChunk, signal) {
@@ -715,20 +704,7 @@ Rules:
 - Be decisive — if in doubt between HOLD and IGNORE, use HOLD
 - No padding, no explanations beyond the table and top pick`;
 
-  const stream = getClient().messages.stream({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 2000,
-    messages: [{ role: 'user', content: prompt }],
-  });
-
-  if (signal) signal.addEventListener('abort', () => stream.abort());
-
-  for await (const chunk of stream) {
-    if (signal?.aborted) break;
-    if (chunk.type === 'content_block_delta' && chunk.delta?.type === 'text_delta') {
-      onChunk(chunk.delta.text);
-    }
-  }
+  await streamGemini({ contents: prompt, maxOutputTokens: 2000, onChunk, signal });
 }
 
 export async function streamScreener({ query, market, type }, onChunk, signal) {
@@ -770,18 +746,5 @@ Rules:
 - If fewer than 3 match, say so honestly
 - Max 350 words total`;
 
-  const stream = getClient().messages.stream({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 600,
-    messages: [{ role: 'user', content: prompt }],
-  });
-
-  if (signal) signal.addEventListener('abort', () => stream.abort());
-
-  for await (const chunk of stream) {
-    if (signal?.aborted) break;
-    if (chunk.type === 'content_block_delta' && chunk.delta?.type === 'text_delta') {
-      onChunk(chunk.delta.text);
-    }
-  }
+  await streamGemini({ contents: prompt, maxOutputTokens: 600, onChunk, signal });
 }

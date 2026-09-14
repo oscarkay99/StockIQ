@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Sparkles, RefreshCw, ChevronDown, Loader2, Play, TrendingUp, TrendingDown, Minus, ChevronsUp, ChevronsDown } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { streamAnalysis } from '../services/claude.js';
+import { streamAnalysis } from '../services/llm.js';
 
 const TABS = [
   { key: 'trade_signal',    label: 'Trade Signal',   short: 'Signal'   },
@@ -210,7 +210,7 @@ export default function AnalysisHub({ ticker, stockData }) {
       if (err.name !== 'AbortError' && !ctrl.signal.aborted) {
         setResults(p => ({
           ...p,
-          [type]: `**Error:** ${err.message}\n\nMake sure \`VITE_ANTHROPIC_API_KEY\` is set.`,
+          [type]: `**Error:** ${err.message}\n\nMake sure \`VITE_GEMINI_API_KEY\` is set.`,
         }));
       }
     } finally {

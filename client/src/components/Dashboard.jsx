@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { TrendingUp, TrendingDown, Minus, RefreshCw, Loader2, Star, Activity } from 'lucide-react';
-import { streamMarketDashboard } from '../services/claude.js';
+import { streamMarketDashboard } from '../services/llm.js';
 import { getFullStockData, buildStubFromMarkets, fetchGseVolumeMap } from '../services/stockData.js';
 
 // The exchange feed only covers GSE, so live volume is only ever shown for
@@ -141,7 +141,7 @@ export default function Dashboard({ onSelectStock, onLiveUpdate }) {
       }
     } catch (err) {
       if (err.name !== 'AbortError' && !ctrl.signal.aborted && !buf) {
-        setResult(`**Error:** ${err.message}\n\nMake sure \`VITE_ANTHROPIC_API_KEY\` is set.`);
+        setResult(`**Error:** ${err.message}\n\nMake sure \`VITE_GEMINI_API_KEY\` is set.`);
       }
     } finally {
       if (!ctrl.signal.aborted) setStreaming(false);
