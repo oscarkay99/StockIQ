@@ -19,6 +19,12 @@ app.use('/api/screener', screenerRouter);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
-app.listen(PORT, () => {
-  console.log(`Stock Research Server running on http://localhost:${PORT}`);
-});
+// Vercel runs the Express app as a serverless function. Local and Render
+// deployments still start the regular HTTP listener.
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Stock Research Server running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
