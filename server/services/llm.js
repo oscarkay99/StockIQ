@@ -523,7 +523,9 @@ async function streamGemini({ contents, maxOutputTokens, onChunk }) {
         contents,
         config: {
           maxOutputTokens,
-          thinkingConfig: { thinkingLevel: 'medium' },
+          // Preserve the response budget for the large dashboard and screener
+          // tables while retaining lightweight reasoning.
+          thinkingConfig: { thinkingLevel: 'low' },
         },
       });
 
