@@ -10,7 +10,15 @@ import { cachedStream } from './cache.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const GSE_FUND = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/gse-fundamentals.json'), 'utf8'));
 
-const MODEL = 'gemini-3.6-flash';
+// Gemini 3.8 Flash is the strongest stable model currently available on the
+// Gemini Developer API free tier. Keep this configurable so deployments can
+// switch models without a code change.
+const MODELS = [...new Set([
+  process.env.GEMINI_MODEL,
+  'gemini-3.8-flash',
+  'gemini-3.6-flash',
+  'gemini-3.5-flash-lite',
+].filter(Boolean))];
 
 const DASHBOARD_TTL = 15 * 60 * 1000;
 const SIGNAL_TTL = 15 * 60 * 1000;
@@ -506,14 +514,32 @@ export function getAnalysisTypes() {
 const PDF_ANALYSIS_TYPES = new Set(['fundamental', 'trade_signal', 'growth_dividend', 'risk']);
 
 async function streamGemini({ contents, maxOutputTokens, onChunk }) {
-  const response = await getClient().models.generateContentStream({
-    model: MODEL,
-    contents,
-    config: { maxOutputTokens, thinkingConfig: { thinkingBudget: 0 } },
-  });
+  for (const [index, model] of MODELS.entries()) {
+    let emittedOutput = false;
 
-  for await (const chunk of response) {
-    if (chunk.text) onChunk(chunk.text);
+    try {
+      const response = await getClient().models.generateContentStream({
+        model,
+        contents,
+        config: {
+          maxOutputTokens,
+          thinkingConfig: { thinkingLevel: 'medium' },
+        },
+      });
+
+      for await (const chunk of response) {
+        if (chunk.text) {
+          emittedOutput = true;
+          onChunk(chunk.text);
+        }
+      }
+      return;
+    } catch (error) {
+      const isRetryable = error?.status === 429 || error?.status === 503;
+      const hasFallback = index < MODELS.length - 1;
+      if (emittedOutput || !isRetryable || !hasFallback) throw error;
+      console.warn(`${model} unavailable (${error.status}); retrying with ${MODELS[index + 1]}`);
+    }
   }
 }
 
