@@ -515,7 +515,7 @@ const PDF_ANALYSIS_TYPES = new Set(['fundamental', 'trade_signal', 'growth_divid
 
 async function streamGemini({ contents, maxOutputTokens, onChunk }) {
   for (const [index, model] of MODELS.entries()) {
-    let emittedOutput = false;
+    let output = '';
 
     try {
       const response = await getClient().models.generateContentStream({
@@ -530,16 +530,14 @@ async function streamGemini({ contents, maxOutputTokens, onChunk }) {
       });
 
       for await (const chunk of response) {
-        if (chunk.text) {
-          emittedOutput = true;
-          onChunk(chunk.text);
-        }
+        if (chunk.text) output += chunk.text;
       }
+      if (output) onChunk(output);
       return;
     } catch (error) {
       const isRetryable = error?.status === 429 || error?.status === 503;
       const hasFallback = index < MODELS.length - 1;
-      if (emittedOutput || !isRetryable || !hasFallback) throw error;
+      if (!isRetryable || !hasFallback) throw error;
       console.warn(`${model} unavailable (${error.status}); retrying with ${MODELS[index + 1]}`);
     }
   }
