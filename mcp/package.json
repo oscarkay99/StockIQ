@@ -1,0 +1,15 @@
+{
+  "name": "stockiq-mcp",
+  "version": "0.1.0",
+  "description": "MCP server that exposes StockIQ market data (NYSE/NASDAQ, GSE, NSE, JSE) as tools for Claude and other MCP clients",
+  "type": "module",
+  "bin": { "stockiq-mcp": "index.js" },
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test-client.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "4.6.7"
+  }
+}
